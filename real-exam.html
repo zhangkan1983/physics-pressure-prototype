@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>压强中考真题库</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.94);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 380px;
+        gap: 28px;
+        align-items: center;
+        margin-top: 34px;
+        padding: 38px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fbfbf5 0%, #eef5e7 54%, #e2edf4 100%);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(36px, 4.6vw, 66px);
+        line-height: 1.03;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3vw, 38px);
+        line-height: 1.18;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0;
+        color: #4d5a50;
+        line-height: 1.75;
+      }
+
+      .lead {
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .source-board {
+        display: grid;
+        gap: 12px;
+      }
+
+      .source-board div {
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.86);
+        padding: 16px;
+      }
+
+      .source-board strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--green);
+        font-size: 24px;
+      }
+
+      section {
+        padding: 42px 0;
+      }
+
+      .toolbar {
+        position: sticky;
+        top: 72px;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(251, 251, 245, 0.96);
+        backdrop-filter: blur(10px);
+      }
+
+      select {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 0 12px;
+        color: var(--ink);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .exam-list {
+        display: grid;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .exam {
+        display: grid;
+        gap: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        padding: 24px;
+      }
+
+      .exam-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .chips,
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: var(--field);
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .chip.real {
+        background: var(--red-2);
+        color: var(--red);
+      }
+
+      .chip.knowledge {
+        background: var(--green-2);
+        color: var(--green);
+      }
+
+      .stem {
+        border-left: 6px solid var(--green);
+        border-radius: 8px;
+        background: var(--green-2);
+        padding: 16px 18px;
+        color: #26372d;
+        line-height: 1.9;
+      }
+
+      .source {
+        border: 1px dashed rgba(49, 95, 131, 0.35);
+        border-radius: 8px;
+        background: #f7fbfd;
+        padding: 14px;
+        color: #31485a;
+        line-height: 1.7;
+      }
+
+      .source a {
+        color: var(--blue);
+        font-weight: 800;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .analysis {
+        display: none;
+        gap: 14px;
+        border-radius: 8px;
+        background: var(--blue-2);
+        padding: 18px;
+      }
+
+      .analysis.open {
+        display: grid;
+      }
+
+      .analysis ol {
+        margin: 0;
+        padding-left: 22px;
+        color: #31485a;
+        line-height: 1.8;
+      }
+
+      .notice {
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        padding: 20px;
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .hero,
+        .toolbar {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          position: static;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          padding: 0 16px;
+        }
+
+        .nav {
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .exam-head {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a href="index.html">单元首页</a>
+          <a href="#exams" class="active">中考真题</a>
+          <a href="challenge-practice.html">压轴训练</a>
+          <a href="hard-mode.html">72 分拔高</a>
+          <a href="#source-note">来源说明</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="shell">
+        <section class="hero">
+          <div>
+            <span class="eyebrow">中考原题索引 · 点来源看完整原题</span>
+            <h1>这里放历年中考卷里的压强原题</h1>
+            <p class="lead">每张卡必须能追到年份、地区、题号和原题页面。网页内只放定位信息和解题拆解，完整题干、图表和选项请点来源看原卷。</p>
+          </div>
+          <div class="source-board">
+            <div><strong>原题</strong><p>不是类题，不是改编题，不是我编的题。</p></div>
+            <div><strong>来源</strong><p>优先原卷 PDF；没有官方页时，只放可打开的公开原题页。</p></div>
+            <div><strong>边界</strong><p>不整段转载试卷，避免版权问题。</p></div>
+          </div>
+        </section>
+
+        <section id="exams">
+          <div class="toolbar" aria-label="真题筛选">
+            <select id="yearFilter">
+              <option value="all">全部年份</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+            </select>
+            <select id="topicFilter">
+              <option value="all">全部题型</option>
+              <option value="solid">固体压强</option>
+              <option value="liquid">液体压强</option>
+              <option value="experiment">实验探究</option>
+              <option value="mixed">综合计算</option>
+            </select>
+            <button class="btn" id="reset" type="button">重置</button>
+          </div>
+
+          <div class="exam-list">
+            <article class="exam" data-year="2024" data-topic="solid">
+              <div class="exam-head">
+                <div>
+                  <h3>01 2024 北京第 23 题：滑冰鞋冰刀与压强</h3>
+                  <div class="chips"><span class="chip real">原题</span><span class="chip">北京</span><span class="chip">解释题</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a0" type="button">看拆解</button>
+              </div>
+              <div class="stem">原题定位：2024 年北京市中考物理试卷第 23 题，考查冰刀锋利、冰面受压熔化和滑行原因。</div>
+              <div class="source">完整原题：<a href="https://www.jyeoo.com/pp/dcfcd24d-5491-458c-bbcb-c595742193c9" target="_blank" rel="noreferrer">2024 年北京市中考物理试卷，第 23 题</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-meaning.html">压强意义</a><a class="chip knowledge" href="pressure-change.html">改变压强</a></div>
+              <div class="analysis" id="a0"><ol><li>冰刀锋利，本质是减小受力面积。</li><li>同样的人对冰面压力近似不变，受力面积越小，压强越大。</li><li>题干还把压强和冰的熔点联系起来，所以答案不能只停留在“增大压强”，还要解释形成水膜后摩擦减小。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2024" data-topic="solid mixed">
+              <div class="exam-head">
+                <div>
+                  <h3>02 2024 北京第 25 题：共享单车对地面压强</h3>
+                  <div class="chips"><span class="chip real">原题</span><span class="chip">北京</span><span class="chip">计算题</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a00" type="button">看拆解</button>
+              </div>
+              <div class="stem">原题定位：2024 年北京市中考物理试卷第 25 题，给出共享单车和骑行者质量、单轮接触面积，求车对水平地面的压强。</div>
+              <div class="source">完整原题：<a href="https://www.jyeoo.com/pp/dcfcd24d-5491-458c-bbcb-c595742193c9" target="_blank" rel="noreferrer">2024 年北京市中考物理试卷，第 25 题</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="analysis" id="a00"><ol><li>先算总重：骑行者和整车都由地面支撑。</li><li>再算总受力面积：两只车轮接触面积相加。</li><li>最后用 p=F/S，注意 cm² 要换算成 m²。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2024" data-topic="solid mixed">
+              <div class="exam-head">
+                <div>
+                  <h3>03 2024 广东第 21 题：深中通道汽车压强</h3>
+                  <div class="chips"><span class="chip real">原题</span><span class="chip">广东</span><span class="chip">速度 + 压强 + 功</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a000" type="button">看拆解</button>
+              </div>
+              <div class="stem">原题定位：2024 年广东省中考物理试卷第 21 题，汽车通过深中通道，包含“静止在水平路面上时对路面的压强”。</div>
+              <div class="source">完整原题：<a href="https://www.jyeoo.com/pp/93493500-fbd7-41b5-a613-b34a614ddf5b" target="_blank" rel="noreferrer">2024 年广东省中考物理试卷，第 21 题</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="analysis" id="a000"><ol><li>压强小问只看静止时车对水平路面的压力和车轮总接触面积。</li><li>水平地面静止时，压力大小等于汽车重力。</li><li>速度、路程、牵引力做功是同题其他小问，不要混进压强公式。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2023" data-topic="liquid experiment">
+              <div class="exam-head">
+                <div>
+                  <h3>04 2023 重庆 A 卷第 19 题：U 形管液体压强实验</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">重庆 A 卷</span><span class="chip">实验探究</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a1" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：U 形管压强计加装“三通接头”，考查装置气密性、深度、方向、密度、U 形管倾斜读数等判断。</div>
+              <div class="source">来源：2023 年重庆市中考物理试题 A 卷，第 19 题。原题材料见 <a href="https://cdn.att.tthaoke.com/testpaper/release/9/9dcf393fbe10a92fff1cbb4a0bb32a72/2023%E5%B9%B4%E9%87%8D%E5%BA%86%E5%B8%82%E4%B8%AD%E8%80%83%E7%89%A9%E7%90%86%E8%AF%95%E9%A2%98%EF%BC%88A%E5%8D%B7%EF%BC%89%EF%BC%88%E8%A7%A3%E6%9E%90%E7%89%88%EF%BC%89.pdf" target="_blank" rel="noreferrer">重庆 A 卷解析版 PDF</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-liquid.html">液体压强特点</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="a1"><ol><li>先识别仪器：U 形管高度差反映探头处液体压强大小。</li><li>气密性判断：轻压橡皮膜后高度差能稳定保持，说明不漏气。</li><li>深度变量：同种液体、方向相同，探头越深，高度差越大。</li><li>方向变量：同种液体、同一深度，只改变探头方向，高度差基本相同，说明同一深度各方向压强相等。</li><li>密度变量：比较不同液体时必须控制深度相同。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2023" data-topic="solid mixed">
+              <div class="exam-head">
+                <div>
+                  <h3>05 2023 重庆 A 卷第 21 题：桔槔取水与人对地面压强</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">重庆 A 卷</span><span class="chip">杠杆 + 压强</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a2" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：古代桔槔取水情境，给出桶、配重、人重和人与地面受力面积，要求求人对地面的压强。</div>
+              <div class="source">来源：2023 年重庆市中考物理试题 A 卷，第 21 题。原题材料见 <a href="https://www.scribd.com/document/992122748/2023%E5%B9%B4%E9%87%8D%E5%BA%86%E5%B8%82%E4%B8%AD%E8%80%83%E7%89%A9%E7%90%86%E8%AF%95%E9%A2%98-A%E5%8D%B7-%E5%8E%9F%E5%8D%B7%E7%89%88" target="_blank" rel="noreferrer">2023 重庆 A 卷原卷材料</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="analysis" id="a2"><ol><li>这不是单纯压强题，前面要先用杠杆平衡求人受到的额外作用力。</li><li>最后一步才回到压强公式 p=F/S。</li><li>关键错误：把人的重力直接当成人对地面的压力，忽略桔槔对人的作用。</li><li>写答案时要明确对象：人对地面，不是桶对绳，也不是配重对杆。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2025" data-topic="solid">
+              <div class="exam-head">
+                <div>
+                  <h3>06 2025 江苏扬州第 21 题：无人快递配送车</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">江苏扬州</span><span class="chip">车辆压强</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a3" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：配送车匀速行驶，已知牵引力、轮胎接触总面积和对地压强，求阻力和总质量。</div>
+              <div class="source">来源：2025 年江苏扬州中考物理真题，第 21 题。题目收录见 <a href="https://zy.21cnjy.com/25324133" target="_blank" rel="noreferrer">江苏 12 地市 2025 中考物理真题分层专题</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="analysis" id="a3"><ol><li>匀速直线运动：牵引力和阻力是一对平衡力，所以阻力大小等于牵引力。</li><li>地面压强：p=F/S，先由 F=pS 求车对地面的压力。</li><li>水平地面上，车对地面的压力等于车与货物总重力。</li><li>再用 G=mg 求总质量。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2025" data-topic="solid">
+              <div class="exam-head">
+                <div>
+                  <h3>07 2025 江苏南京第 22 题：无人机启动前压强</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">江苏南京</span><span class="chip">固体压强</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a4" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：某型号无人机启动前静止在水平面上，给出质量和接触面积，求重力和对水平面的压强。</div>
+              <div class="source">来源：2025 年江苏南京中考物理真题，第 22 题。题目收录见 <a href="https://zy.21cnjy.com/25324133" target="_blank" rel="noreferrer">江苏 12 地市 2025 中考物理真题分层专题</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="analysis" id="a4"><ol><li>先用 G=mg 求无人机重力。</li><li>启动前静止在水平面上，对水平面的压力大小等于重力。</li><li>受力面积必须换算成平方米，再代入 p=F/S。</li><li>这题基础，但能检查单位换算和“压力是否等于重力”的条件意识。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2025" data-topic="solid mixed">
+              <div class="exam-head">
+                <div>
+                  <h3>08 2025 湖南长沙：小货车与圆柱体石料</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">湖南长沙</span><span class="chip">压强增量</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a5" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：小货车空载时给出质量和车轮接触面积；放入圆柱体石料后，车轮接触面积变化，并给出“压强增加量等于石料对车厢的压强”。</div>
+              <div class="source">来源：2025 年湖南长沙中考物理真题。题目收录见 <a href="https://www.renrendoc.com/paper/504452630.html" target="_blank" rel="noreferrer">2023-2025 中考真题压强与浮力计算专题汇编</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="hard-mode.html">72 分拔高</a></div>
+              <div class="analysis" id="a5"><ol><li>第一问求车重，第二问求空载压强，都是基础。</li><li>第三问难点是“压强增加量”不是石料重量除以原接触面积。</li><li>要分别算放石料前后小货车对地面的压强，再取差值。</li><li>题目给出这个差值等于石料对车厢压强，因此可反推石料密度。</li><li>这是典型“增量建模”题，适合 72 分学生练。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2025" data-topic="liquid">
+              <div class="exam-head">
+                <div>
+                  <h3>09 2025 黑龙江：水陆两栖汽车车底压强</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">黑龙江</span><span class="chip">液体压强</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a6" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：国产水陆两栖汽车航行，给出车底距水面的深度，求车底受到水的压强，并结合排开水质量求浮力。</div>
+              <div class="source">来源：2025 年黑龙江中考物理真题。题目收录见 <a href="https://www.renrendoc.com/paper/504452630.html" target="_blank" rel="noreferrer">2023-2025 中考真题压强与浮力计算专题汇编</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="a6"><ol><li>车底受到水的压强用 p=ρgh。</li><li>h 是车底到水面的竖直深度，不是汽车总高度，也不是吃水深度全部条件都要用。</li><li>若问浮力，用 F浮=G排=m排g。</li><li>压强和浮力不要混：压强看深度，浮力看排开液体重力。</li></ol></div>
+            </article>
+
+            <article class="exam" data-year="2024" data-topic="liquid mixed">
+              <div class="exam-head">
+                <div>
+                  <h3>10 2024 江苏宿迁：桥墩模型与压力传感器</h3>
+                  <div class="chips"><span class="chip real">真题</span><span class="chip">江苏宿迁</span><span class="chip">压强 + 浮力</span></div>
+                </div>
+                <button class="btn primary" data-analysis="a7" type="button">看拆解</button>
+              </div>
+              <div class="stem">真题关键信息：圆柱体模拟桥墩，结合压力传感器、拉力传感器和水深图像，求质量、密度，以及浸没时对杯底的压强。</div>
+              <div class="source">来源：2024 年江苏宿迁中考物理真题。题目收录见 <a href="https://www.renrendoc.com/paper/504452630.html" target="_blank" rel="noreferrer">2023-2025 中考真题压强与浮力计算专题汇编</a>。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="a7"><ol><li>先由压力传感器示数识别圆柱体重力，求质量。</li><li>再从图像读出高度，结合底面积求体积和密度。</li><li>浸没后圆柱体对杯底的压力不是重力，而是重力减浮力。</li><li>最后用 p=F/S 求圆柱体对杯底的压强。</li></ol></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="source-note">
+          <div class="notice">
+            <h2>来源与版权说明</h2>
+            <p>本页是“中考原题索引”，不是改编题库。为避免整段转载试卷，页面只放题目定位、来源链接和解题拆解；完整题干、图表和选项请点来源查看。</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const yearFilter = document.querySelector("#yearFilter");
+      const topicFilter = document.querySelector("#topicFilter");
+      const exams = document.querySelectorAll(".exam");
+
+      function applyFilters() {
+        const year = yearFilter.value;
+        const topic = topicFilter.value;
+        exams.forEach((item) => {
+          const yearMatch = year === "all" || item.dataset.year === year;
+          const topicMatch = topic === "all" || item.dataset.topic.split(" ").includes(topic);
+          item.style.display = yearMatch && topicMatch ? "grid" : "none";
+        });
+      }
+
+      document.querySelector("#reset").addEventListener("click", () => {
+        yearFilter.value = "all";
+        topicFilter.value = "all";
+        applyFilters();
+      });
+      yearFilter.addEventListener("change", applyFilters);
+      topicFilter.addEventListener("change", applyFilters);
+
+      document.querySelectorAll("[data-analysis]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = document.querySelector(`#${button.dataset.analysis}`);
+          target.classList.toggle("open");
+          button.textContent = target.classList.contains("open") ? "收起拆解" : "看拆解";
+        });
+      });
+    </script>
+  </body>
+</html>
