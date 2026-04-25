@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>压强中考高阶训练</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+        --shadow: 0 18px 45px rgba(42, 50, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 168px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--field);
+      }
+
+      .mode-toggle button {
+        height: 32px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .mode-toggle button.active {
+        background: var(--ink);
+        color: white;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 28px;
+        align-items: center;
+        min-height: 430px;
+        margin-top: 34px;
+        padding: 36px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fbfbf5 0%, #eef5e7 58%, #e3edf4 100%);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(34px, 4vw, 58px);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3vw, 38px);
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0;
+        color: #4d5a50;
+        line-height: 1.75;
+      }
+
+      .lead {
+        margin: 0;
+        color: #4d5a50;
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .summary-board {
+        display: grid;
+        gap: 12px;
+      }
+
+      .stat {
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 16px;
+      }
+
+      .stat strong {
+        display: block;
+        color: var(--green);
+        font-size: 28px;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+
+      section {
+        padding: 42px 0;
+      }
+
+      .panel,
+      .problem {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+        padding: 24px;
+      }
+
+      .filters {
+        position: sticky;
+        top: 72px;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(251, 251, 245, 0.95);
+        backdrop-filter: blur(10px);
+      }
+
+      select,
+      .search {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 0 12px;
+        color: var(--ink);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .problem-list {
+        display: grid;
+        gap: 18px;
+        margin-top: 20px;
+      }
+
+      .problem {
+        display: grid;
+        gap: 16px;
+      }
+
+      .problem-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .meta,
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: var(--field);
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .chip.hot {
+        background: var(--red-2);
+        color: var(--red);
+      }
+
+      .chip.knowledge {
+        background: var(--green-2);
+        color: var(--green);
+      }
+
+      .stem {
+        border-left: 6px solid var(--green);
+        border-radius: 8px;
+        background: var(--green-2);
+        padding: 16px 18px;
+        color: #26372d;
+        line-height: 1.8;
+      }
+
+      .analysis {
+        display: none;
+        border-radius: 8px;
+        background: var(--blue-2);
+        padding: 16px;
+      }
+
+      .analysis.open {
+        display: grid;
+        gap: 12px;
+      }
+
+      .analysis ol {
+        margin: 0;
+        padding-left: 22px;
+        color: #31485a;
+        line-height: 1.75;
+      }
+
+      .linked {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .note {
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        padding: 18px;
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 4px 4px 0 var(--ink);
+        transform: translateY(120%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .hero,
+        .filters {
+          grid-template-columns: 1fr;
+        }
+
+        .filters {
+          position: static;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          padding: 0 16px;
+        }
+
+        .nav {
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .mode-toggle {
+          width: 100%;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .problem-head {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a href="index.html">单元首页</a>
+          <a href="#problems" class="active">真题训练</a>
+          <a href="pressure-meaning.html">知识点</a>
+          <a href="#source-note">来源说明</a>
+        </nav>
+        <div class="mode-toggle" aria-label="模式切换">
+          <button class="active" type="button">学生</button>
+          <button type="button" data-toast="家长模式后续可显示错因统计和陪学建议。">家长</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="shell">
+        <section class="hero">
+          <div>
+            <span class="eyebrow">近年中考题型改编 · 压强专题</span>
+            <h1>高阶题不是多算一步，而是多判断一层</h1>
+            <p class="lead">这里先放 10 道压强高频中考题型改编题。每道题都挂到知识点，做错后能回看对应页面。</p>
+          </div>
+          <div class="summary-board">
+            <div class="stat"><strong>10</strong><p>道高阶题，覆盖固体压强、液体压强、实验题和综合判断。</p></div>
+            <div class="stat"><strong>6</strong><p>个知识点挂载，避免做完题只看答案。</p></div>
+            <div class="stat"><strong>改编</strong><p>基于近年公开中考题型，不直接搬运整题文本。</p></div>
+          </div>
+        </section>
+
+        <section id="problems">
+          <div class="filters" aria-label="题目筛选">
+            <select id="knowledgeFilter">
+              <option value="all">全部知识点</option>
+              <option value="meaning">压强意义</option>
+              <option value="formula">公式使用</option>
+              <option value="change">改变压强</option>
+              <option value="liquid">液体压强特点</option>
+              <option value="law">液体压强规律</option>
+              <option value="experiment">实验题</option>
+            </select>
+            <select id="typeFilter">
+              <option value="all">全部题型</option>
+              <option value="calc">计算题</option>
+              <option value="judge">判断题</option>
+              <option value="experiment">实验题</option>
+              <option value="explain">解释题</option>
+              <option value="mixed">综合题</option>
+            </select>
+            <select id="levelFilter">
+              <option value="all">全部难度</option>
+              <option value="medium">中等</option>
+              <option value="hard">偏难</option>
+              <option value="challenge">压轴综合</option>
+            </select>
+            <button class="btn" type="button" id="resetFilters">重置</button>
+          </div>
+
+          <div class="problem-list">
+            <article class="problem" data-knowledge="formula meaning" data-type="calc mixed" data-level="hard">
+              <div class="problem-head">
+                <div>
+                  <h3>01 正方体叠放后的压强比较</h3>
+                  <div class="meta"><span class="chip hot">真题改编</span><span class="chip">固体压强综合</span><span class="chip">偏难</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p1">看解析</button>
+              </div>
+              <div class="stem">两个实心正方体 A、B 放在水平桌面上。A 边长 20 cm，重 16 N；B 边长 10 cm，重 8 N。先分别求 A、B 对桌面的压强，再判断把 B 放在 A 上方后，A 对桌面的压强如何变化。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-meaning.html">压强意义</a><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="analysis" id="p1"><ol><li>第一眼看：固体压强计算，先找压力 F 和受力面积 S。</li><li>A：S=0.2×0.2=0.04 m²，p=16/0.04=400 Pa。</li><li>B：S=0.1×0.1=0.01 m²，p=8/0.01=800 Pa。</li><li>B 放在 A 上后，A 对桌面的压力变为 16+8=24 N，受力面积仍为 0.04 m²，p=600 Pa。</li><li>易错点：叠放后看 A 对桌面，不是 B 对 A。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="formula change" data-type="judge" data-level="medium">
+              <div class="problem-head">
+                <div>
+                  <h3>02 单脚站立与双脚站立</h3>
+                  <div class="meta"><span class="chip hot">类真题</span><span class="chip">比较变化</span><span class="chip">中等</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p2">看解析</button>
+              </div>
+              <div class="stem">同一名学生先双脚站立，再单脚站立。若每只鞋底与地面的接触面积相同，比较两种情况下学生对地面的压力和压强。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-change.html">改变压强</a></div>
+              <div class="analysis" id="p2"><ol><li>第一眼看：同一人，压力大小基本等于重力，不变。</li><li>双脚站立面积是单脚站立面积的 2 倍。</li><li>由 p=F/S，F 不变、S 变小，单脚站立时压强变大。</li><li>易错点：不要说“单脚站立时人更重”。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="change meaning" data-type="explain" data-level="medium">
+              <div class="problem-head">
+                <div>
+                  <h3>03 履带、刀刃与书包带归类</h3>
+                  <div class="meta"><span class="chip hot">类真题</span><span class="chip">生活解释</span><span class="chip">中等</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p3">看解析</button>
+              </div>
+              <div class="stem">坦克履带做得很宽，刀刃磨得很薄，书包带做得较宽。分别说明这些设计是在增大还是减小压强，并写出对应原因。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-change.html">改变压强</a></div>
+              <div class="analysis" id="p3"><ol><li>履带宽：增大受力面积，减小压强，不易陷入地面。</li><li>刀刃薄：减小受力面积，增大压强，更容易切开物体。</li><li>书包带宽：增大受力面积，减小肩部压强，不容易勒疼。</li><li>易错点：生活解释题也要回到 F 和 S。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="experiment formula" data-type="experiment" data-level="hard">
+              <div class="problem-head">
+                <div>
+                  <h3>04 海绵实验中的控制变量</h3>
+                  <div class="meta"><span class="chip hot">真题改编</span><span class="chip">实验题</span><span class="chip">偏难</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p4">看解析</button>
+              </div>
+              <div class="stem">小明用海绵、木块和砝码探究压力作用效果。甲、乙两次受力面积相同，乙比甲多放砝码；乙、丙两次压力相同，丙把木块竖放。回答：观察什么现象？甲乙对比说明什么？乙丙对比说明什么？</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-change.html">改变压强</a></div>
+              <div class="analysis" id="p4"><ol><li>观察海绵凹陷程度，凹陷越明显，压力作用效果越明显。</li><li>甲乙对比：受力面积相同，压力越大，作用效果越明显。</li><li>乙丙对比：压力相同，受力面积越小，作用效果越明显。</li><li>易错点：结论必须带控制条件。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="liquid" data-type="explain judge" data-level="medium">
+              <div class="problem-head">
+                <div>
+                  <h3>05 侧壁小孔为什么喷水</h3>
+                  <div class="meta"><span class="chip hot">类真题</span><span class="chip">液体方向</span><span class="chip">中等</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p5">看解析</button>
+              </div>
+              <div class="stem">在装水的塑料瓶侧壁扎一个小孔，水会从侧面喷出。这个现象说明液体压强有什么特点？</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-liquid.html">液体压强特点</a></div>
+              <div class="analysis" id="p5"><ol><li>侧壁小孔喷水，说明水对容器侧壁有压强。</li><li>进一步说明液体内部向各个方向都有压强。</li><li>易错点：不能只说“水受重力向下流”，题目考的是侧壁受压。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="law liquid" data-type="judge explain" data-level="hard">
+              <div class="problem-head">
+                <div>
+                  <h3>06 不同高度小孔喷水远近</h3>
+                  <div class="meta"><span class="chip hot">真题改编</span><span class="chip">液体深度</span><span class="chip">偏难</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p6">看解析</button>
+              </div>
+              <div class="stem">同一瓶水的侧壁上、中、下三个位置开小孔。松开后，哪个小孔喷得更远？说明理由。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-liquid.html">液体压强特点</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="p6"><ol><li>同种液体中，深度越大，液体压强越大。</li><li>下方小孔所处深度最大，受到液体压强最大。</li><li>因此下方小孔喷得更远。</li><li>易错点：必须写“同种液体中”。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="law" data-type="judge" data-level="hard">
+              <div class="problem-head">
+                <div>
+                  <h3>07 不同形状容器中的同深度压强</h3>
+                  <div class="meta"><span class="chip hot">真题改编</span><span class="chip">干扰项判断</span><span class="chip">偏难</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p7">看解析</button>
+              </div>
+              <div class="stem">三个形状不同的容器中都装同种液体，液面高度相同。比较三个容器底部同一深度处的液体压强大小。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="p7"><ol><li>同种液体，比较某点液体压强主要看深度。</li><li>液面高度相同，底部深度相同，所以底部液体压强相等。</li><li>容器形状、底面积是干扰项。</li><li>易错点：不要看到容器宽窄不同就判断压强不同。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="law experiment" data-type="experiment" data-level="challenge">
+              <div class="problem-head">
+                <div>
+                  <h3>08 U 形管压强计综合实验</h3>
+                  <div class="meta"><span class="chip hot">真题改编</span><span class="chip">液体压强实验</span><span class="chip">压轴综合</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p8">看解析</button>
+              </div>
+              <div class="stem">用 U 形管压强计探究液体压强。探头在水中逐渐下移，液面高度差变大；保持深度不变，换成盐水后高度差更大；同一深度改变探头方向，高度差不变。分别得出什么结论？</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-liquid.html">液体压强特点</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="p8"><ol><li>探头越深，高度差越大：同种液体中，深度越大，液体压强越大。</li><li>同深度盐水高度差更大：同一深度，液体密度越大，压强越大。</li><li>同一深度改变方向高度差不变：同一深度，各方向压强相等。</li><li>易错点：高度差才反映压强大小，不是液面总高度。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="formula law" data-type="calc mixed" data-level="challenge">
+              <div class="problem-head">
+                <div>
+                  <h3>09 液体压强与容器受力综合</h3>
+                  <div class="meta"><span class="chip hot">类真题</span><span class="chip">综合计算</span><span class="chip">压轴综合</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p9">看解析</button>
+              </div>
+              <div class="stem">容器中水深 0.2 m，水的密度取 1.0×10³ kg/m³，g 取 10 N/kg。求容器底部受到水的压强。若容器底面积为 0.03 m²，再求水对容器底部的压力。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="analysis" id="p9"><ol><li>液体压强先用 p=ρgh。</li><li>p=1.0×10³×10×0.2=2000 Pa。</li><li>求压力再用 F=pS=2000×0.03=60 N。</li><li>易错点：液体对底部压力不一定直接等于液体重力，先求压强更稳。</li></ol></div>
+            </article>
+
+            <article class="problem" data-knowledge="meaning formula change law experiment" data-type="mixed" data-level="challenge">
+              <div class="problem-head">
+                <div>
+                  <h3>10 压强综合判断：从现象到公式</h3>
+                  <div class="meta"><span class="chip hot">类真题</span><span class="chip">综合判断</span><span class="chip">压轴综合</span></div>
+                </div>
+                <button class="btn primary" type="button" data-answer="p10">看解析</button>
+              </div>
+              <div class="stem">判断下列说法是否正确，并说明理由：A. 压力越大，压强一定越大；B. 液体越多，容器底部压强一定越大；C. U 形管两侧液面高度差越大，说明探头处液体压强越大；D. 同一深度处，液体向各方向压强相等。</div>
+              <div class="linked"><a class="chip knowledge" href="pressure-meaning.html">压强意义</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a><a class="chip knowledge" href="pressure-liquid.html">液体压强特点</a></div>
+              <div class="analysis" id="p10"><ol><li>A 错。压强还与受力面积有关。</li><li>B 错。液体压强主要与深度和密度有关，不能只看液体总量。</li><li>C 对。U 形管高度差可反映探头处压强大小。</li><li>D 对。同一深度处，液体向各方向压强相等。</li><li>易错点：这类题考的是条件是否完整。</li></ol></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="source-note">
+          <div class="note">
+            <h2>来源说明</h2>
+            <p>本页题目为近年中考压强高频题型的教学改编，不直接复制整套试卷原文。题型参考了公开压强专题汇编、2023 重庆 A 卷液体压强实验题型、2023 湖南衡阳液体压强实验题型，以及近年全国通用压强与浮力分类题的常见考法。</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const knowledgeFilter = document.querySelector("#knowledgeFilter");
+      const typeFilter = document.querySelector("#typeFilter");
+      const levelFilter = document.querySelector("#levelFilter");
+      const problems = document.querySelectorAll(".problem");
+      const toast = document.querySelector("#toast");
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2400);
+      }
+
+      function applyFilters() {
+        const knowledge = knowledgeFilter.value;
+        const type = typeFilter.value;
+        const level = levelFilter.value;
+
+        problems.forEach((problem) => {
+          const knowledgeMatch = knowledge === "all" || problem.dataset.knowledge.split(" ").includes(knowledge);
+          const typeMatch = type === "all" || problem.dataset.type.split(" ").includes(type);
+          const levelMatch = level === "all" || problem.dataset.level === level;
+          problem.style.display = knowledgeMatch && typeMatch && levelMatch ? "grid" : "none";
+        });
+      }
+
+      [knowledgeFilter, typeFilter, levelFilter].forEach((control) => {
+        control.addEventListener("change", applyFilters);
+      });
+
+      document.querySelector("#resetFilters").addEventListener("click", () => {
+        knowledgeFilter.value = "all";
+        typeFilter.value = "all";
+        levelFilter.value = "all";
+        applyFilters();
+      });
+
+      document.querySelectorAll("[data-answer]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const answer = document.querySelector(`#${button.dataset.answer}`);
+          answer.classList.toggle("open");
+          button.textContent = answer.classList.contains("open") ? "收起解析" : "看解析";
+        });
+      });
+
+      document.querySelectorAll("[data-toast]").forEach((button) => {
+        button.addEventListener("click", () => showToast(button.dataset.toast));
+      });
+    </script>
+  </body>
+</html>
