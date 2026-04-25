@@ -681,7 +681,7 @@
           <div class="steps">
             <div class="step"><h3>先看是不是同种液体</h3><p>如果是同种液体，优先比较深度。</p></div>
             <div class="step"><h3>再看是不是同一深度</h3><p>如果深度相同，就比较液体密度。</p></div>
-            <div class="step"><h3>最后排除干扰项</h3><p>容器形状、底面积、液体总量不直接决定某点压强。</p></div>
+            <div class="step"><h3>最后排除干扰项</h3><p>容器形状、底面积、液体总量不直接决定某点压强；底面是否水平会影响能不能把“底部压强”当成一个值。</p></div>
           </div>
         </section>
 
@@ -747,7 +747,11 @@
             </article>
             <article class="card mistake">
               <h3>被容器形状干扰</h3>
-              <p>形状不同的容器，只要同种液体、同一深度，某点压强相同。</p>
+              <p>形状不同的容器，只要液体密度相同、从液面向下量的竖直深度相同，某点压强相同。</p>
+            </article>
+            <article class="card mistake">
+              <h3>把不规则底部当成一个点</h3>
+              <p>若底面不是水平平面，底部各处深度可能不同，就不能直接说“底部压强相等”，要逐点比较深度。</p>
             </article>
           </div>
         </section>
@@ -772,7 +776,7 @@
         <section class="panel">
           <h2>本页小结</h2>
           <div class="big-line">液体压强大小主要看深度和液体密度，结论一定要带条件。</div>
-          <p>同种液体比深度，同一深度比密度；同一深度各方向压强相等。容器形状和液体总量通常是干扰项。</p>
+          <p>同种液体比从液面向下量的竖直深度，同一深度比密度；同一深度各方向压强相等。容器形状和液体总量通常是干扰项。</p>
           <div class="actions">
             <a class="btn" href="pressure-liquid.html">上一页：液体压强特点</a>
             <a class="btn primary" href="index.html">回到单元首页</a>
