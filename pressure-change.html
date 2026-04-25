@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>增大和减小压强的方法</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+        --shadow: 0 18px 45px rgba(42, 50, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 168px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--field);
+      }
+
+      .mode-toggle button {
+        height: 32px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .mode-toggle button.active {
+        background: var(--ink);
+        color: white;
+      }
+
+      .page {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 32px;
+        align-items: start;
+        padding: 34px 24px 72px;
+      }
+
+      .main {
+        display: grid;
+        gap: 28px;
+      }
+
+      .side {
+        position: sticky;
+        top: 96px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .crumbs {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 28px;
+        align-items: center;
+        min-height: 430px;
+        padding: 36px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fbfbf5 0%, #eef5e7 58%, #e3edf4 100%);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(34px, 4vw, 56px);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3vw, 38px);
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0;
+        color: #4d5a50;
+        line-height: 1.75;
+      }
+
+      .lead {
+        margin: 0;
+        color: #4d5a50;
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .change-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .demo-card {
+        min-height: 250px;
+        position: relative;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .demo-card strong {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        z-index: 2;
+      }
+
+      .demo-surface {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 26px;
+        height: 48px;
+        border: 2px solid var(--ink);
+        border-bottom: 8px solid #3f4a42;
+        border-radius: 8px 8px 0 0;
+        background: repeating-linear-gradient(135deg, #d8c16e 0 12px, #ead985 12px 24px);
+      }
+
+      .knife {
+        position: absolute;
+        left: 50%;
+        bottom: 72px;
+        width: 40px;
+        height: 130px;
+        transform: translateX(-50%);
+        background: var(--red);
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .snowshoe {
+        position: absolute;
+        left: 50%;
+        bottom: 74px;
+        width: 130px;
+        height: 40px;
+        transform: translateX(-50%);
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        background: var(--yellow);
+      }
+
+      .panel,
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+        padding: 24px;
+      }
+
+      .panel {
+        display: grid;
+        gap: 16px;
+      }
+
+      .big-line {
+        border-left: 7px solid var(--green);
+        padding: 18px 22px;
+        background: var(--green-2);
+        border-radius: 8px;
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1.4;
+      }
+
+      .two-col,
+      .three-col,
+      .four-col {
+        display: grid;
+        gap: 16px;
+      }
+
+      .two-col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .four-col {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .mini-title {
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .rule {
+        min-height: 190px;
+        display: grid;
+        align-content: start;
+        gap: 10px;
+      }
+
+      .rule .symbol {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        font-size: 24px;
+        font-weight: 900;
+      }
+
+      .steps {
+        display: grid;
+        gap: 12px;
+        counter-reset: step;
+      }
+
+      .step {
+        position: relative;
+        padding: 16px 16px 16px 54px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--ink);
+        color: white;
+        font-weight: 900;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .tab {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .tab.active {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: white;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      .example {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+      }
+
+      .answer {
+        display: none;
+        padding: 14px;
+        border-radius: 8px;
+        background: var(--blue-2);
+        color: #31485a;
+        line-height: 1.7;
+      }
+
+      .answer.open {
+        display: block;
+      }
+
+      .mistake {
+        border-left: 5px solid var(--red);
+      }
+
+      .parent-card {
+        border: 2px solid var(--ink);
+        background: var(--blue-2);
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .side .card {
+        padding: 18px;
+      }
+
+      .side ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .side a {
+        display: block;
+        padding: 8px 0;
+        color: var(--muted);
+      }
+
+      .side a:hover {
+        color: var(--green);
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 4px 4px 0 var(--ink);
+        transform: translateY(120%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+
+      body.parent-mode .student-only {
+        display: none;
+      }
+
+      body:not(.parent-mode) .parent-only {
+        display: none;
+      }
+
+      body.parent-mode .parent-card {
+        outline: 4px solid rgba(49, 95, 131, 0.24);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .page,
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          position: static;
+        }
+
+        .three-col,
+        .four-col {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell,
+        .page {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .nav {
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .mode-toggle {
+          width: 100%;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .two-col,
+        .change-demo {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a href="index.html">单元首页</a>
+          <a class="active" href="#">知识点</a>
+          <a href="#rules">方法</a>
+          <a href="#examples">生活例子</a>
+          <a href="#questions">题型</a>
+          <a href="#parents">家长陪学</a>
+        </nav>
+        <div class="mode-toggle" aria-label="模式切换">
+          <button class="active" type="button" data-mode="student">学生</button>
+          <button type="button" data-mode="parent">家长</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell page">
+      <div class="main">
+        <div class="crumbs">压强单元 / 知识点 04 / 增大和减小压强的方法</div>
+
+        <section class="hero" id="top">
+          <div>
+            <span class="eyebrow">把公式变成生活判断</span>
+            <h1>改变压强，本质只动两个量</h1>
+            <p class="lead">由 p = F / S 可知，想让作用效果更明显，就增大压力或减小面积；想让作用效果没那么明显，就减小压力或增大面积。</p>
+            <div class="actions">
+              <a class="btn primary" href="#rules">看四种方法</a>
+              <a class="btn" href="#examples">看生活例子</a>
+            </div>
+          </div>
+          <div class="change-demo" aria-label="增大和减小压强示意">
+            <div class="demo-card">
+              <strong>刀刃：减小面积，增大压强</strong>
+              <div class="knife"></div>
+              <div class="demo-surface"></div>
+            </div>
+            <div class="demo-card">
+              <strong>雪地靴：增大面积，减小压强</strong>
+              <div class="snowshoe"></div>
+              <div class="demo-surface"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="human">
+          <h2>一句人话解释</h2>
+          <div class="big-line">压强变化，就是看压力 F 和受力面积 S 怎么变。</div>
+          <p>很多生活设计都在调这两个量：刀、针、图钉让力更集中；履带、雪地靴、宽书包带让力更分散。</p>
+        </section>
+
+        <section class="panel" id="rules">
+          <h2>四种方法</h2>
+          <div class="four-col">
+            <article class="card rule">
+              <div class="symbol">F↑</div>
+              <h3>增大压力</h3>
+              <p>受力面积不变时，压力越大，压强越大。</p>
+            </article>
+            <article class="card rule">
+              <div class="symbol">S↓</div>
+              <h3>减小面积</h3>
+              <p>压力不变时，受力面积越小，压强越大。</p>
+            </article>
+            <article class="card rule">
+              <div class="symbol">F↓</div>
+              <h3>减小压力</h3>
+              <p>受力面积不变时，压力越小，压强越小。</p>
+            </article>
+            <article class="card rule">
+              <div class="symbol">S↑</div>
+              <h3>增大面积</h3>
+              <p>压力不变时，受力面积越大，压强越小。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="examples">
+          <h2>生活例子怎么归类</h2>
+          <div class="two-col">
+            <article class="card">
+              <div class="mini-title">增大压强</div>
+              <h3>刀刃、针尖、图钉尖</h3>
+              <p>这些设计主要靠减小受力面积，让压力集中起来，所以更容易切开、刺入、扎进去。</p>
+            </article>
+            <article class="card">
+              <div class="mini-title">减小压强</div>
+              <h3>履带、雪地靴、宽书包带</h3>
+              <p>这些设计主要靠增大受力面积，把压力摊开，所以不容易陷进去，也不容易勒疼。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="method">
+          <h2>判断题三步</h2>
+          <div class="steps">
+            <div class="step"><h3>先问：这个设计想让作用效果更明显，还是更不明显？</h3><p>更容易切、扎、刺，通常是增大压强；不容易陷、勒、压坏，通常是减小压强。</p></div>
+            <div class="step"><h3>再问：它改的是压力 F，还是受力面积 S？</h3><p>初中常见生活题，大多数是在改面积。</p></div>
+            <div class="step"><h3>最后回到公式解释</h3><p>用 p = F / S 说明：F 变大或 S 变小，p 变大；F 变小或 S 变大，p 变小。</p></div>
+          </div>
+        </section>
+
+        <section class="panel" id="questions">
+          <h2>题型拆解</h2>
+          <div class="tabs" role="tablist">
+            <button class="tab active" type="button" data-tab="life">生活解释题</button>
+            <button class="tab" type="button" data-tab="mixed">两量同时变化</button>
+          </div>
+          <div class="tab-panel active" id="life">
+            <div class="example">
+              <h3>例题：为什么书包带做得宽一些，背起来更舒服？</h3>
+              <p>第一眼先看：题目说“更舒服”，意思是肩膀局部受到的作用效果减弱。</p>
+              <button class="btn" type="button" data-answer="a1">展开解题思路</button>
+              <div class="answer" id="a1">书包对肩膀的压力大致不变，书包带变宽后，受力面积增大。由 p = F / S 可知，压强减小，所以肩膀不那么勒。</div>
+            </div>
+          </div>
+          <div class="tab-panel" id="mixed">
+            <div class="example">
+              <h3>例题：人变重了，同时鞋底也变宽了，压强一定变大吗？</h3>
+              <p>第一眼先看：压力和面积都变了，不能只看其中一个量。</p>
+              <button class="btn" type="button" data-answer="a2">展开解题思路</button>
+              <div class="answer" id="a2">不一定。人变重会让压力增大，鞋底变宽会让受力面积增大。压强是否变大，要看 F/S 的整体结果。没有具体数据时，不能直接判断。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="mistakes">
+          <h2>最容易错的 3 件事</h2>
+          <div class="three-col">
+            <article class="card mistake">
+              <h3>只背“增大面积增大压强”</h3>
+              <p>错。面积在分母，压力不变时，面积越大，压强越小。</p>
+            </article>
+            <article class="card mistake">
+              <h3>只靠生活感觉答题</h3>
+              <p>生活解释题也要回到公式，说明 F 或 S 怎么变。</p>
+            </article>
+            <article class="card mistake">
+              <h3>两量同时变时乱判断</h3>
+              <p>压力和面积都变时，要比较 F/S，不能只说“更重所以更大”。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel parent-card" id="parents">
+          <h2>家长提问卡</h2>
+          <div class="steps">
+            <div class="step"><h3>这个东西是想让压强变大，还是变小？</h3><p>先让孩子说清设计目的。</p></div>
+            <div class="step"><h3>它主要改的是压力，还是面积？</h3><p>看孩子能不能把生活语言翻译成物理量。</p></div>
+            <div class="step"><h3>能不能用 p = F / S 说一遍？</h3><p>如果能用公式解释生活现象，说明理解更稳。</p></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>中考真题挑战</h2>
+          <p>这页对应的高频题型是“生活现象解释”。答题时不能只说常识，要回到压力 F 或受力面积 S 的变化。</p>
+          <div class="actions">
+            <a class="btn primary" href="advanced-practice.html">去做关联真题</a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>本页小结</h2>
+          <div class="big-line">增大压强：F↑ 或 S↓。减小压强：F↓ 或 S↑。</div>
+          <p>这一页的关键不是背四句话，而是看到生活现象时能判断：它到底是在改变压力，还是改变受力面积。</p>
+          <div class="actions">
+            <a class="btn" href="pressure-formula.html">上一页：公式怎么用</a>
+            <a class="btn primary" href="pressure-liquid.html">下一页：液体压强特点</a>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side">
+        <article class="card">
+          <h3>本页目录</h3>
+          <a href="#human">一句人话解释</a>
+          <a href="#rules">四种方法</a>
+          <a href="#examples">生活例子</a>
+          <a href="#method">判断三步</a>
+          <a href="#questions">题型拆解</a>
+          <a href="#mistakes">易错点</a>
+        </article>
+        <article class="card">
+          <h3>学习状态</h3>
+          <ul>
+            <li>所属单元：压强</li>
+            <li>建议时长：12 分钟</li>
+            <li>难度：生活应用</li>
+          </ul>
+        </article>
+        <article class="card parent-card">
+          <h3>家长看这里</h3>
+          <p>这页最适合家长陪：让孩子拿身边物品举例，说出它是在增大还是减小压强。</p>
+          <button class="btn" type="button" data-parent-switch>切换家长模式</button>
+        </article>
+      </aside>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.querySelector("#toast");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modeButtons.forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          document.body.classList.toggle("parent-mode", button.dataset.mode === "parent");
+          showToast(button.dataset.mode === "parent" ? "已切换到家长模式。" : "已切换到学生模式。");
+        });
+      });
+
+      document.querySelectorAll("[data-parent-switch]").forEach((button) => {
+        button.addEventListener("click", () => document.querySelector('[data-mode="parent"]').click());
+      });
+
+      document.querySelectorAll("[data-toast]").forEach((button) => {
+        button.addEventListener("click", () => showToast(button.dataset.toast));
+      });
+
+      document.querySelectorAll("[data-answer]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const answer = document.querySelector(`#${button.dataset.answer}`);
+          answer.classList.toggle("open");
+          button.textContent = answer.classList.contains("open") ? "收起解题思路" : "展开解题思路";
+        });
+      });
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-tab]").forEach((item) => item.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+          button.classList.add("active");
+          document.querySelector(`#${button.dataset.tab}`).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
