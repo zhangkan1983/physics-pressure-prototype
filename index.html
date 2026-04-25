@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>压强单元学习原型</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+        --shadow: 0 18px 45px rgba(42, 50, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .tools {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search {
+        width: 220px;
+        height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 0 12px;
+        color: var(--ink);
+      }
+
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 168px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--field);
+      }
+
+      .mode-toggle button {
+        height: 32px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .mode-toggle button.active {
+        background: var(--ink);
+        color: white;
+      }
+
+      .hero {
+        min-height: 640px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.06fr) minmax(360px, 0.94fr);
+        align-items: center;
+        gap: 48px;
+        padding: 44px 0 36px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      h1 {
+        max-width: 690px;
+        margin: 22px 0 18px;
+        font-size: clamp(40px, 5vw, 68px);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 620px;
+        margin: 0;
+        color: #4d5a50;
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .btn:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .btn.secondary {
+        background: var(--yellow);
+      }
+
+      .hero-note {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .lab-board {
+        position: relative;
+        min-height: 520px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background:
+          radial-gradient(circle at 18% 16%, rgba(241, 199, 91, 0.5), transparent 18%),
+          linear-gradient(135deg, #eef5e7, #fdf9e8 55%, #e7eff5);
+        box-shadow: var(--shadow), 7px 7px 0 var(--ink);
+        overflow: hidden;
+      }
+
+      .board-title {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        right: 18px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .pressure-demo {
+        position: absolute;
+        left: 34px;
+        right: 34px;
+        bottom: 36px;
+        height: 290px;
+        border-bottom: 12px solid #4d594f;
+      }
+
+      .sponge {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 72px;
+        background: repeating-linear-gradient(135deg, #d8c16e 0 12px, #ead985 12px 24px);
+        border: 2px solid var(--ink);
+        border-radius: 8px 8px 0 0;
+      }
+
+      .block {
+        position: absolute;
+        bottom: 72px;
+        width: 138px;
+        height: 110px;
+        border: 2px solid var(--ink);
+        border-radius: 7px 7px 0 0;
+        background: #86a98b;
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 800;
+      }
+
+      .block.left {
+        left: 42px;
+      }
+
+      .block.right {
+        right: 42px;
+        width: 70px;
+        background: #b6654f;
+      }
+
+      .force-arrow {
+        position: absolute;
+        bottom: 200px;
+        width: 4px;
+        height: 70px;
+        background: var(--red);
+      }
+
+      .force-arrow::after {
+        content: "";
+        position: absolute;
+        left: -8px;
+        bottom: -2px;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 16px solid var(--red);
+      }
+
+      .force-arrow.one {
+        left: 108px;
+      }
+
+      .force-arrow.two {
+        right: 74px;
+      }
+
+      .tag {
+        position: absolute;
+        padding: 8px 10px;
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        background: var(--panel);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .tag.t1 {
+        top: 84px;
+        left: 38px;
+      }
+
+      .tag.t2 {
+        top: 132px;
+        right: 26px;
+      }
+
+      .tag.t3 {
+        top: 182px;
+        left: 170px;
+      }
+
+      section {
+        padding: 54px 0;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 22px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(28px, 3vw, 40px);
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      .section-head p {
+        max-width: 520px;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .phenomena {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.86);
+        padding: 18px;
+        min-height: 138px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(23, 33, 27, 0.45);
+        box-shadow: var(--shadow);
+      }
+
+      .icon {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 14px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        font-size: 22px;
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        line-height: 1.35;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .linkline {
+        margin-top: 14px;
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .diagnosis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .diagnosis .card {
+        min-height: 118px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .mini-btn {
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--field);
+        padding: 10px 13px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .map {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+      }
+
+      .step {
+        position: relative;
+        min-height: 150px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 14px;
+      }
+
+      .step strong {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--green);
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .status {
+        position: absolute;
+        left: 14px;
+        bottom: 14px;
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: var(--green-2);
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .outcomes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 28px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 24px;
+      }
+
+      .outcomes div {
+        display: flex;
+        gap: 10px;
+        color: #304037;
+        line-height: 1.55;
+      }
+
+      .outcomes span {
+        color: var(--green);
+        font-weight: 900;
+      }
+
+      .mistakes {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mistake-card {
+        min-height: 112px;
+        border-left: 5px solid var(--red);
+      }
+
+      .mistake-card .answer {
+        display: none;
+        margin-top: 12px;
+        color: #55413c;
+        background: var(--red-2);
+        padding: 10px;
+        border-radius: 8px;
+        line-height: 1.55;
+      }
+
+      .mistake-card.open .answer {
+        display: block;
+      }
+
+      .parent-band {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 24px;
+        padding: 28px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--blue-2);
+        box-shadow: 6px 6px 0 var(--ink);
+      }
+
+      .parent-band h2 {
+        font-size: 30px;
+      }
+
+      .parent-band p {
+        margin: 8px 0 0;
+        color: #31485a;
+        line-height: 1.7;
+      }
+
+      .paths {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .path-card {
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .path-flow {
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .footer-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 34px 0 60px;
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 4px 4px 0 var(--ink);
+        transform: translateY(120%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+
+      body.parent-mode .student-only {
+        display: none;
+      }
+
+      body:not(.parent-mode) .parent-only {
+        display: none;
+      }
+
+      body.parent-mode .parent-surface {
+        outline: 3px solid rgba(49, 95, 131, 0.26);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .search {
+          width: 170px;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: 0;
+        }
+
+        .lab-board {
+          min-height: 420px;
+        }
+
+        .phenomena,
+        .mistakes {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .map {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .parent-band {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          padding: 0 16px;
+        }
+
+        .nav {
+          height: auto;
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .tools {
+          width: 100%;
+        }
+
+        .search,
+        .mode-toggle {
+          flex: 1;
+        }
+
+        h1 {
+          font-size: 38px;
+        }
+
+        .lead {
+          font-size: 18px;
+        }
+
+        .section-head {
+          display: block;
+        }
+
+        .section-head p {
+          margin-top: 10px;
+        }
+
+        .phenomena,
+        .diagnosis,
+        .mistakes,
+        .paths,
+        .outcomes {
+          grid-template-columns: 1fr;
+        }
+
+        .map {
+          grid-template-columns: 1fr;
+        }
+
+        .diagnosis .card {
+          grid-template-columns: 1fr;
+        }
+
+        .lab-board {
+          min-height: 390px;
+        }
+
+        .board-title {
+          font-size: 12px;
+        }
+
+        .tag {
+          font-size: 12px;
+          padding: 6px 8px;
+        }
+
+        .tag.t1 {
+          top: 88px;
+          left: 38px;
+        }
+
+        .tag.t2 {
+          top: 88px;
+          right: 24px;
+        }
+
+        .tag.t3 {
+          top: 146px;
+          left: 50%;
+          transform: translateX(-50%);
+          white-space: nowrap;
+        }
+
+        .pressure-demo {
+          left: 18px;
+          right: 18px;
+          bottom: 30px;
+          height: 250px;
+        }
+
+        .block {
+          bottom: 72px;
+          height: 112px;
+        }
+
+        .block.left {
+          left: 20px;
+          width: 136px;
+        }
+
+        .block.right {
+          right: 20px;
+          width: 78px;
+        }
+
+        .force-arrow {
+          bottom: 186px;
+          height: 58px;
+        }
+
+        .force-arrow.one {
+          left: 84px;
+        }
+
+        .force-arrow.two {
+          right: 58px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="#">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a class="active" href="#">单元首页</a>
+          <a href="#map">知识点</a>
+          <a href="#experiment">实验</a>
+          <a href="#diagnosis">题型</a>
+          <a href="advanced-practice.html">真题</a>
+          <a href="#mistakes">易错点</a>
+          <a href="#parents">家长陪学</a>
+        </nav>
+        <div class="tools">
+          <input class="search" id="search" aria-label="搜索" placeholder="搜图钉、液体压强" />
+          <div class="mode-toggle" aria-label="模式切换">
+            <button class="active" type="button" data-mode="student">学生</button>
+            <button type="button" data-mode="parent">家长</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="shell hero">
+        <div>
+          <span class="eyebrow">初二物理 · 压强单元</span>
+          <h1>为什么同样的力，作用效果会不一样？</h1>
+          <p class="lead">
+            从图钉、书包带、履带到潜水和吸管，把抽象的压强知识重新连回真实世界。
+          </p>
+          <p class="lead parent-only">
+            家长不需要先会讲题，只要能带孩子说清“谁在压谁、变的是哪个量、现象说明什么”。
+          </p>
+          <div class="actions">
+            <a class="btn primary" href="#phenomena">从生活现象开始</a>
+            <a class="btn secondary" href="#diagnosis">做学习诊断</a>
+          </div>
+          <div class="hero-note">建议一次学习 20 到 30 分钟，先求讲得明白，再追求算得熟。</div>
+        </div>
+
+        <div class="lab-board" aria-label="压强实验示意">
+          <div class="board-title">
+            <span>同样的压力</span>
+            <span>面积越小，作用越集中</span>
+          </div>
+          <span class="tag t1">压力 F</span>
+          <span class="tag t2">受力面积 S</span>
+          <span class="tag t3">压强 p = F / S</span>
+          <div class="pressure-demo">
+            <div class="force-arrow one"></div>
+            <div class="force-arrow two"></div>
+            <div class="block left">面积大</div>
+            <div class="block right">面积小</div>
+            <div class="sponge"></div>
+          </div>
+        </div>
+      </div>
+
+      <section id="phenomena">
+        <div class="shell">
+          <div class="section-head">
+            <h2>从这些现象进入压强</h2>
+            <p>每张卡片都对应一个知识点。先让孩子解释现象，再回到概念和公式。</p>
+          </div>
+          <div class="grid phenomena">
+            <a class="card" href="pressure-meaning.html">
+              <div class="icon">⌄</div>
+              <h3>为什么图钉尖容易扎进去</h3>
+              <p>同样的力集中到更小面积上，作用效果更明显。</p>
+              <div class="linkline">对应：压强的意义</div>
+            </a>
+            <a class="card" href="pressure-liquid-law.html">
+              <div class="icon">▴</div>
+              <h3>为什么高跟鞋更容易压坏地板</h3>
+              <p>接触面积变小，单位面积分到的压力变多。</p>
+              <div class="linkline">对应：改变压强</div>
+            </a>
+            <a class="card" href="#map">
+              <div class="icon">▰</div>
+              <h3>为什么坦克要用履带</h3>
+              <p>把压力分散到更大面积上，减少陷入泥地的可能。</p>
+              <div class="linkline">对应：减小压强</div>
+            </a>
+            <a class="card" href="#map">
+              <div class="icon">═</div>
+              <h3>为什么宽书包带更舒服</h3>
+              <p>肩膀受到的压力被摊开，局部压强变小。</p>
+              <div class="linkline">对应：受力面积</div>
+            </a>
+            <a class="card" href="#map">
+              <div class="icon">≈</div>
+              <h3>为什么潜水越深越难受</h3>
+              <p>同种液体中，深度越大，液体压强越大。</p>
+              <div class="linkline">对应：液体压强规律</div>
+            </a>
+            <a class="card" href="#parents">
+              <div class="icon">?</div>
+              <h3>为什么吸管能把饮料吸上来</h3>
+              <p>这是大气压的扩展内容，适合后续加入。</p>
+              <div class="linkline">对应：后续扩展</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="diagnosis">
+        <div class="shell">
+          <div class="section-head">
+            <h2>你现在卡在哪</h2>
+            <p>不急着刷题，先定位卡点。每个入口都会带到对应知识点或实验页。</p>
+          </div>
+          <div class="grid diagnosis">
+            <article class="card parent-surface">
+              <div>
+                <h3>我总把压力和重力弄混</h3>
+                <p>先学会判断“谁在压谁”和“接触面在哪里”。</p>
+              </div>
+              <button class="mini-btn" type="button" data-toast="建议先看：压力是什么，和重力有什么区别">带我去补</button>
+            </article>
+            <article class="card parent-surface">
+              <div>
+                <h3>我会背公式，但不会做题</h3>
+                <p>核心不是代入，而是先找对压力 F 和受力面积 S。</p>
+              </div>
+              <a class="mini-btn" href="pressure-formula.html">带我去补</a>
+            </article>
+            <article class="card parent-surface">
+              <div>
+                <h3>我不会判断压强怎么变化</h3>
+                <p>先拆成两个问题：力变了吗？面积变了吗？</p>
+              </div>
+              <a class="mini-btn" href="pressure-change.html">带我去补</a>
+            </article>
+            <article class="card parent-surface">
+              <div>
+                <h3>我实验题总答不完整</h3>
+                <p>训练顺序是：看现象、找变量、写条件、得结论。</p>
+              </div>
+              <button class="mini-btn" type="button" data-toast="建议先看：两个压强核心实验">带我去补</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="map">
+        <div class="shell">
+          <div class="section-head">
+            <h2>本单元学习路线</h2>
+            <p>先解决固体压强，再进入液体压强。顺序清楚，后面的题才不会乱。</p>
+          </div>
+          <div class="map">
+            <article class="step"><strong>01 压力是什么</strong><p>分清压力和重力，知道压力方向垂直于接触面。</p><span class="status">未学</span></article>
+            <a class="step" href="pressure-meaning.html"><strong>02 压强表示什么</strong><p>建立“力有多集中”的直觉，不只背定义。</p><span class="status">未学</span></a>
+            <a class="step" href="pressure-formula.html"><strong>03 公式怎么用</strong><p>会找压力 F 和受力面积 S，再计算。</p><span class="status">未学</span></a>
+            <a class="step" href="pressure-change.html"><strong>04 怎么改变压强</strong><p>用力和面积解释刀、履带、书包带。</p><span class="status">未学</span></a>
+            <a class="step" href="pressure-liquid.html"><strong>05 液体压强特点</strong><p>理解液体内部各个方向都有压强。</p><span class="status">未学</span></a>
+            <a class="step" href="pressure-liquid-law.html"><strong>06 液体压强规律</strong><p>说清深度、密度和条件。</p><span class="status">未学</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell">
+          <div class="section-head">
+            <h2>学完这个单元，你应该会什么</h2>
+            <p>这里不是目录，而是验收标准。能讲出来，才算开始懂了。</p>
+          </div>
+          <div class="outcomes">
+            <div><span>✓</span>分清压力、重力、压强</div>
+            <div><span>✓</span>找对压力和受力面积</div>
+            <div><span>✓</span>判断压强怎么变化</div>
+            <div><span>✓</span>解释图钉、履带、书包带这些现象</div>
+            <div><span>✓</span>看懂两个核心实验在观察什么</div>
+            <div><span>✓</span>说清液体压强和深度、密度的关系</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mistakes">
+        <div class="shell">
+          <div class="section-head">
+            <h2>这一单元最容易错的地方</h2>
+            <p>这些错误如果不先纠正，后面公式题和实验题都会跟着乱。</p>
+          </div>
+          <div class="grid mistakes">
+            <article class="card mistake-card">
+              <h3>压力不一定等于重力</h3>
+              <button class="mini-btn" type="button">展开看例子</button>
+              <div class="answer">物体压墙时，压力方向水平；重力方向竖直向下。二者不是同一个力。</div>
+            </article>
+            <article class="card mistake-card">
+              <h3>压强不是压力</h3>
+              <button class="mini-btn" type="button">展开看例子</button>
+              <div class="answer">压力是力，压强是单位面积上分到的压力。压力大，压强不一定大。</div>
+            </article>
+            <article class="card mistake-card">
+              <h3>压力方向不一定竖直向下</h3>
+              <button class="mini-btn" type="button">展开看例子</button>
+              <div class="answer">压力方向垂直于接触面。接触面变了，压力方向也可能变。</div>
+            </article>
+            <article class="card mistake-card">
+              <h3>受力面积不是物体总面积</h3>
+              <button class="mini-btn" type="button">展开看例子</button>
+              <div class="answer">只看真正接触并受压的那一块面积，不看整个物体表面积。</div>
+            </article>
+            <article class="card mistake-card">
+              <h3>比较压强不能只看力</h3>
+              <button class="mini-btn" type="button">展开看例子</button>
+              <div class="answer">压强同时看压力和受力面积。两者都变时，要分别分析。</div>
+            </article>
+            <article class="card mistake-card">
+              <h3>液体压强规律必须带条件</h3>
+              <button class="mini-btn" type="button">展开看例子</button>
+              <div class="answer">“深度越大压强越大”要加“同种液体中”；“密度越大压强越大”要加“同一深度”。</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="parents">
+        <div class="shell">
+          <div class="parent-band parent-surface">
+            <div>
+              <h2>给家长：这一单元怎么陪最有效</h2>
+              <p>先别急着问会不会算，先问孩子能不能解释现象。家长的作用不是替孩子讲题，而是把孩子的思路问出来。</p>
+            </div>
+            <div class="actions">
+              <button class="btn primary" type="button" data-parent-switch>切换到家长模式</button>
+              <button class="btn" type="button" data-toast="家长陪学页下一步会单独展开：20分钟陪学流程、提问卡、判断标准。">查看陪学路径</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="advanced">
+        <div class="shell">
+          <div class="section-head">
+            <h2>中考真题高阶训练</h2>
+            <p>基于近年压强高频中考题型改编，每道题都挂到对应知识点，做错后能回看讲解。</p>
+          </div>
+          <div class="parent-band">
+            <div>
+              <h2>先做 10 道题，把知识点连起来</h2>
+              <p>覆盖固体压强计算、改变压强、液体压强方向、液体深度/密度比较、U 形管压强计实验。</p>
+            </div>
+            <div class="actions">
+              <a class="btn primary" href="advanced-practice.html">进入真题训练</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell">
+          <div class="section-head">
+            <h2>不知道怎么开始？按这个路径走</h2>
+            <p>v1 先把学习路径跑通，再补完整题库和学习记录。</p>
+          </div>
+          <div class="grid paths">
+            <article class="card path-card">
+              <div>
+                <h3>学生自学路径</h3>
+                <div class="path-flow">现象 → 知识点 → 题型 → 实验 → 易错复盘</div>
+              </div>
+              <a class="mini-btn" href="pressure-meaning.html">按这个顺序开始</a>
+            </article>
+            <article class="card path-card parent-surface">
+              <div>
+                <h3>家长陪学路径</h3>
+                <div class="path-flow">提问现象 → 共读知识点 → 做 2 题 → 看实验 → 复盘</div>
+              </div>
+              <button class="mini-btn" type="button" data-toast="建议从图钉和书包带两个现象开始问孩子。">按这个顺序陪学</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="experiment">
+        <div class="shell footer-actions">
+          <a class="btn" href="#map">回到知识点列表</a>
+          <a class="btn primary" href="pressure-meaning.html">进入：压强到底表示什么</a>
+          <a class="btn secondary" href="advanced-practice.html">做中考真题</a>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.querySelector("#toast");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modeButtons.forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          document.body.classList.toggle("parent-mode", button.dataset.mode === "parent");
+          showToast(button.dataset.mode === "parent" ? "已切换到家长模式：陪学提示会更突出。" : "已切换到学生模式：学习路径会更突出。");
+        });
+      });
+
+      document.querySelectorAll("[data-parent-switch]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelector('[data-mode="parent"]').click();
+        });
+      });
+
+      document.querySelectorAll("[data-toast]").forEach((button) => {
+        button.addEventListener("click", () => showToast(button.dataset.toast));
+      });
+
+      document.querySelectorAll(".mistake-card .mini-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const card = button.closest(".mistake-card");
+          card.classList.toggle("open");
+          button.textContent = card.classList.contains("open") ? "收起例子" : "展开看例子";
+        });
+      });
+
+      document.querySelector("#search").addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        const value = event.currentTarget.value.trim();
+        if (!value) {
+          showToast("可以试试搜索：图钉、液体压强、受力面积。");
+          return;
+        }
+        showToast(`已收到搜索词“${value}”。静态原型里先展示搜索反馈，后续可接内容索引。`);
+      });
+    </script>
+  </body>
+</html>
