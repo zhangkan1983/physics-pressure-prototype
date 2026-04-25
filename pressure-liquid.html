@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>液体压强有什么特点</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+        --shadow: 0 18px 45px rgba(42, 50, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 168px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--field);
+      }
+
+      .mode-toggle button {
+        height: 32px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .mode-toggle button.active {
+        background: var(--ink);
+        color: white;
+      }
+
+      .page {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 32px;
+        align-items: start;
+        padding: 34px 24px 72px;
+      }
+
+      .main {
+        display: grid;
+        gap: 28px;
+      }
+
+      .side {
+        position: sticky;
+        top: 96px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .crumbs {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 28px;
+        align-items: center;
+        min-height: 430px;
+        padding: 36px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fbfbf5 0%, #eef5e7 54%, #dfeff4 100%);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(34px, 4vw, 56px);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3vw, 38px);
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0;
+        color: #4d5a50;
+        line-height: 1.75;
+      }
+
+      .lead {
+        margin: 0;
+        color: #4d5a50;
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .water-demo {
+        position: relative;
+        min-height: 310px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .tank {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        bottom: 32px;
+        height: 230px;
+        border: 3px solid var(--ink);
+        border-top: 0;
+        border-radius: 0 0 12px 12px;
+        background: linear-gradient(to bottom, rgba(76, 147, 177, 0.25), rgba(76, 147, 177, 0.75));
+      }
+
+      .water-line {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        top: 78px;
+        border-top: 3px solid var(--blue);
+      }
+
+      .arrow {
+        position: absolute;
+        width: 54px;
+        height: 4px;
+        background: var(--red);
+      }
+
+      .arrow::after {
+        content: "";
+        position: absolute;
+        right: -2px;
+        top: -8px;
+        border-left: 14px solid var(--red);
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+      }
+
+      .arrow.left {
+        left: 66px;
+        top: 170px;
+        transform: rotate(180deg);
+      }
+
+      .arrow.right {
+        right: 66px;
+        top: 170px;
+      }
+
+      .arrow.down {
+        left: 50%;
+        bottom: 54px;
+        transform: translateX(-50%) rotate(90deg);
+      }
+
+      .label {
+        position: absolute;
+        padding: 7px 9px;
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        background: var(--panel);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .label.l1 {
+        top: 26px;
+        left: 24px;
+      }
+
+      .label.l2 {
+        right: 22px;
+        bottom: 28px;
+      }
+
+      .panel,
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+        padding: 24px;
+      }
+
+      .panel {
+        display: grid;
+        gap: 16px;
+      }
+
+      .big-line {
+        border-left: 7px solid var(--green);
+        padding: 18px 22px;
+        background: var(--green-2);
+        border-radius: 8px;
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1.4;
+      }
+
+      .two-col,
+      .three-col {
+        display: grid;
+        gap: 16px;
+      }
+
+      .two-col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mini-title {
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .feature {
+        min-height: 180px;
+        border-top: 6px solid var(--blue);
+      }
+
+      .steps {
+        display: grid;
+        gap: 12px;
+        counter-reset: step;
+      }
+
+      .step {
+        position: relative;
+        padding: 16px 16px 16px 54px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--ink);
+        color: white;
+        font-weight: 900;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .tab {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .tab.active {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: white;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      .example {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+      }
+
+      .answer {
+        display: none;
+        padding: 14px;
+        border-radius: 8px;
+        background: var(--blue-2);
+        color: #31485a;
+        line-height: 1.7;
+      }
+
+      .answer.open {
+        display: block;
+      }
+
+      .mistake {
+        border-left: 5px solid var(--red);
+      }
+
+      .parent-card {
+        border: 2px solid var(--ink);
+        background: var(--blue-2);
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .side .card {
+        padding: 18px;
+      }
+
+      .side ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .side a {
+        display: block;
+        padding: 8px 0;
+        color: var(--muted);
+      }
+
+      .side a:hover {
+        color: var(--green);
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 4px 4px 0 var(--ink);
+        transform: translateY(120%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+
+      body.parent-mode .student-only {
+        display: none;
+      }
+
+      body:not(.parent-mode) .parent-only {
+        display: none;
+      }
+
+      body.parent-mode .parent-card {
+        outline: 4px solid rgba(49, 95, 131, 0.24);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .page,
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          position: static;
+        }
+
+        .three-col {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell,
+        .page {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .nav {
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .mode-toggle {
+          width: 100%;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+
+        .tank,
+        .water-line {
+          left: 42px;
+          right: 42px;
+        }
+
+        .arrow.left {
+          left: 36px;
+        }
+
+        .arrow.right {
+          right: 36px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a href="index.html">单元首页</a>
+          <a class="active" href="#">知识点</a>
+          <a href="#features">特点</a>
+          <a href="#experiment">实验</a>
+          <a href="#questions">题型</a>
+          <a href="#parents">家长陪学</a>
+        </nav>
+        <div class="mode-toggle" aria-label="模式切换">
+          <button class="active" type="button" data-mode="student">学生</button>
+          <button type="button" data-mode="parent">家长</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell page">
+      <div class="main">
+        <div class="crumbs">压强单元 / 知识点 05 / 液体压强有什么特点</div>
+
+        <section class="hero" id="top">
+          <div>
+            <span class="eyebrow">从固体压强进入液体压强</span>
+            <h1>液体不只向下压，它会向四周压</h1>
+            <p class="lead">水会压容器底，也会压容器侧壁。液体能流动，所以它不像固体那样只盯着一个接触面，而是在内部各个方向都有压强。</p>
+            <div class="actions">
+              <a class="btn primary" href="#features">看三个特点</a>
+              <a class="btn" href="#experiment">看实验怎么证明</a>
+            </div>
+          </div>
+          <div class="water-demo" aria-label="液体压强方向示意">
+            <span class="label l1">液体内部有压强</span>
+            <span class="label l2">底部和侧壁都受压</span>
+            <div class="water-line"></div>
+            <div class="tank"></div>
+            <div class="arrow left"></div>
+            <div class="arrow right"></div>
+            <div class="arrow down"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="human">
+          <h2>一句人话解释</h2>
+          <div class="big-line">液体会把周围都“顶住”，不只是往下压。</div>
+          <p>水放在杯子里，杯底会受到水的压强，杯壁也会受到水的压强。潜水时耳朵难受，也是在感受到周围水对身体的压强。</p>
+        </section>
+
+        <section class="panel" id="features">
+          <h2>液体压强的三个特点</h2>
+          <div class="three-col">
+            <article class="card feature">
+              <div class="mini-title">特点 1</div>
+              <h3>液体内部有压强</h3>
+              <p>只要在液体内部，某一点就会受到周围液体的挤压。</p>
+            </article>
+            <article class="card feature">
+              <div class="mini-title">特点 2</div>
+              <h3>对底部和侧壁都有压强</h3>
+              <p>水桶、鱼缸、水坝的侧面都要承受液体压强。</p>
+            </article>
+            <article class="card feature">
+              <div class="mini-title">特点 3</div>
+              <h3>同一深度各方向都有压强</h3>
+              <p>液体能流动，所以同一位置不只受到向下的压强。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="reality">
+          <h2>生活现象怎么解释</h2>
+          <div class="two-col">
+            <article class="card">
+              <div class="mini-title">容器侧壁为什么要结实</div>
+              <h3>水会向侧壁压</h3>
+              <p>如果液体只向下压，容器侧壁就不需要承受压力。但现实中水会把侧壁往外顶。</p>
+            </article>
+            <article class="card">
+              <div class="mini-title">为什么越潜越难受</div>
+              <h3>身体周围都受到水压</h3>
+              <p>潜入水中后，不只是头顶有水，身体各方向都会受到液体压强作用。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="experiment">
+          <h2>实验里怎么看出来</h2>
+          <div class="steps">
+            <div class="step"><h3>用液体压强计的探头放入水中</h3><p>探头相当于在感受水内部某一点的压强。</p></div>
+            <div class="step"><h3>观察 U 形管两侧液面高度差</h3><p>高度差越大，说明探头受到的液体压强越大。</p></div>
+            <div class="step"><h3>改变探头方向</h3><p>同一深度改变方向仍有高度差，说明液体在各个方向都有压强。</p></div>
+          </div>
+        </section>
+
+        <section class="panel" id="questions">
+          <h2>题型拆解</h2>
+          <div class="tabs" role="tablist">
+            <button class="tab active" type="button" data-tab="wall">侧壁受压题</button>
+            <button class="tab" type="button" data-tab="holes">开孔喷水题</button>
+          </div>
+          <div class="tab-panel active" id="wall">
+            <div class="example">
+              <h3>例题：为什么装满水的塑料袋侧面被扎一个小孔，水会从侧面喷出来？</h3>
+              <p>第一眼先看：小孔在侧面，说明题目考液体对侧壁也有压强。</p>
+              <button class="btn" type="button" data-answer="a1">展开解题思路</button>
+              <div class="answer" id="a1">液体内部向各个方向都有压强，水对塑料袋侧壁也有压强。扎孔后，侧壁挡不住水，水就从侧面喷出。</div>
+            </div>
+          </div>
+          <div class="tab-panel" id="holes">
+            <div class="example">
+              <h3>例题：容器不同高度开孔，为什么下面的小孔喷得更远？</h3>
+              <p>第一眼先看：孔的位置深度不同，下面的小孔深度更大。</p>
+              <button class="btn" type="button" data-answer="a2">展开解题思路</button>
+              <div class="answer" id="a2">同种液体中，深度越大，液体压强越大。下面的小孔受到的液体压强更大，所以水喷得更远。这部分会在下一页“液体压强规律”里系统讲。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="mistakes">
+          <h2>最容易错的 3 件事</h2>
+          <div class="three-col">
+            <article class="card mistake">
+              <h3>以为液体只向下压</h3>
+              <p>错。液体对底部和侧壁都有压强，内部各方向也有压强。</p>
+            </article>
+            <article class="card mistake">
+              <h3>以为只有容器底部受压</h3>
+              <p>鱼缸、水坝、水桶侧壁都要承受液体压强。</p>
+            </article>
+            <article class="card mistake">
+              <h3>把方向特点和大小规律混在一起</h3>
+              <p>这页先讲“哪些方向有压强”；下一页再讲“压强大小跟什么有关”。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel parent-card" id="parents">
+          <h2>家长提问卡</h2>
+          <div class="steps">
+            <div class="step"><h3>水为什么会把桶壁往外顶？</h3><p>看孩子能不能说出液体对侧壁也有压强。</p></div>
+            <div class="step"><h3>如果液体只向下压，侧面小孔会喷水吗？</h3><p>用反问帮助孩子建立方向感。</p></div>
+            <div class="step"><h3>这个实验里 U 形管高度差说明什么？</h3><p>看孩子能不能把实验现象和压强大小联系起来。</p></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>中考真题挑战</h2>
+          <p>这页对应的高频题型是“液体对侧壁有压强”和“液体内部各方向有压强”。常见题会用侧壁小孔喷水、橡皮膜凸起来考。</p>
+          <div class="actions">
+            <a class="btn primary" href="advanced-practice.html">去做关联真题</a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>本页小结</h2>
+          <div class="big-line">液体内部各个方向都有压强，底部和侧壁都会受压。</div>
+          <p>这页先建立方向感：液体不是只向下压。下一页再进一步研究液体压强大小和深度、密度的关系。</p>
+          <div class="actions">
+            <a class="btn" href="pressure-change.html">上一页：改变压强</a>
+            <a class="btn primary" href="pressure-liquid-law.html">下一页：液体压强规律</a>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side">
+        <article class="card">
+          <h3>本页目录</h3>
+          <a href="#human">一句人话解释</a>
+          <a href="#features">三个特点</a>
+          <a href="#reality">生活现象</a>
+          <a href="#experiment">实验关联</a>
+          <a href="#questions">题型拆解</a>
+          <a href="#mistakes">易错点</a>
+        </article>
+        <article class="card">
+          <h3>学习状态</h3>
+          <ul>
+            <li>所属单元：压强</li>
+            <li>建议时长：12 分钟</li>
+            <li>难度：液体入门</li>
+          </ul>
+        </article>
+        <article class="card parent-card">
+          <h3>家长看这里</h3>
+          <p>这页不要急着问公式，先问孩子：水到底会压哪里？如果他说“只压下面”，说明方向感还没建立。</p>
+          <button class="btn" type="button" data-parent-switch>切换家长模式</button>
+        </article>
+      </aside>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.querySelector("#toast");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modeButtons.forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          document.body.classList.toggle("parent-mode", button.dataset.mode === "parent");
+          showToast(button.dataset.mode === "parent" ? "已切换到家长模式。" : "已切换到学生模式。");
+        });
+      });
+
+      document.querySelectorAll("[data-parent-switch]").forEach((button) => {
+        button.addEventListener("click", () => document.querySelector('[data-mode="parent"]').click());
+      });
+
+      document.querySelectorAll("[data-toast]").forEach((button) => {
+        button.addEventListener("click", () => showToast(button.dataset.toast));
+      });
+
+      document.querySelectorAll("[data-answer]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const answer = document.querySelector(`#${button.dataset.answer}`);
+          answer.classList.toggle("open");
+          button.textContent = answer.classList.contains("open") ? "收起解题思路" : "展开解题思路";
+        });
+      });
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-tab]").forEach((item) => item.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+          button.classList.add("active");
+          document.querySelector(`#${button.dataset.tab}`).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
