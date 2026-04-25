@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>压强到底表示什么</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+        --shadow: 0 18px 45px rgba(42, 50, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 168px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--field);
+      }
+
+      .mode-toggle button {
+        height: 32px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .mode-toggle button.active {
+        background: var(--ink);
+        color: white;
+      }
+
+      .page {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 32px;
+        align-items: start;
+        padding: 34px 24px 72px;
+      }
+
+      .main {
+        display: grid;
+        gap: 28px;
+      }
+
+      .side {
+        position: sticky;
+        top: 96px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .crumbs {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 28px;
+        align-items: center;
+        min-height: 420px;
+        padding: 36px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fbfbf5 0%, #eef5e7 55%, #e3edf4 100%);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(34px, 4vw, 56px);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        margin: 0;
+        color: #4d5a50;
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .pin-demo {
+        position: relative;
+        min-height: 280px;
+        border-bottom: 10px solid #3f4a42;
+      }
+
+      .finger {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        width: 92px;
+        height: 132px;
+        transform: translateX(-50%);
+        border: 2px solid var(--ink);
+        border-radius: 999px 999px 18px 18px;
+        background: #f0cc9c;
+      }
+
+      .pin-head {
+        position: absolute;
+        left: 50%;
+        bottom: 72px;
+        width: 150px;
+        height: 36px;
+        transform: translateX(-50%);
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        background: var(--yellow);
+      }
+
+      .pin-point {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        width: 34px;
+        height: 72px;
+        transform: translateX(-50%);
+        background: var(--red);
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .surface {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 44px;
+        border: 2px solid var(--ink);
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+        background: repeating-linear-gradient(135deg, #d8c16e 0 12px, #ead985 12px 24px);
+      }
+
+      .callout {
+        position: absolute;
+        padding: 7px 9px;
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        background: var(--panel);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .callout.c1 {
+        top: 30px;
+        left: 12px;
+      }
+
+      .callout.c2 {
+        right: 4px;
+        bottom: 102px;
+      }
+
+      .card,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+        padding: 24px;
+      }
+
+      .panel {
+        display: grid;
+        gap: 16px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3vw, 38px);
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0;
+        color: #4d5a50;
+        line-height: 1.75;
+      }
+
+      .big-line {
+        border-left: 7px solid var(--green);
+        padding: 18px 22px;
+        background: var(--green-2);
+        border-radius: 8px;
+        font-size: 28px;
+        font-weight: 900;
+        line-height: 1.35;
+      }
+
+      .two-col,
+      .three-col {
+        display: grid;
+        gap: 16px;
+      }
+
+      .two-col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mini-title {
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .formula {
+        display: grid;
+        place-items: center;
+        min-height: 120px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 5px 5px 0 var(--ink);
+        font-size: 34px;
+        font-weight: 900;
+      }
+
+      .steps {
+        display: grid;
+        gap: 12px;
+        counter-reset: step;
+      }
+
+      .step {
+        position: relative;
+        padding: 16px 16px 16px 54px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--ink);
+        color: white;
+        font-weight: 900;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .tab {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .tab.active {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: white;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      .example {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+      }
+
+      .answer {
+        display: none;
+        padding: 14px;
+        border-radius: 8px;
+        background: var(--blue-2);
+        color: #31485a;
+        line-height: 1.7;
+      }
+
+      .answer.open {
+        display: block;
+      }
+
+      .mistake {
+        border-left: 5px solid var(--red);
+      }
+
+      .parent-card {
+        border: 2px solid var(--ink);
+        background: var(--blue-2);
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .side .card {
+        padding: 18px;
+      }
+
+      .side ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .side a {
+        display: block;
+        padding: 8px 0;
+        color: var(--muted);
+      }
+
+      .side a:hover {
+        color: var(--green);
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 4px 4px 0 var(--ink);
+        transform: translateY(120%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+      }
+
+      body.parent-mode .student-only {
+        display: none;
+      }
+
+      body:not(.parent-mode) .parent-only {
+        display: none;
+      }
+
+      body.parent-mode .parent-card {
+        outline: 4px solid rgba(49, 95, 131, 0.24);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .page,
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          position: static;
+        }
+
+        .three-col {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell,
+        .page {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .nav {
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .mode-toggle {
+          width: 100%;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+
+        .pin-demo {
+          min-height: 250px;
+        }
+
+        .callout.c2 {
+          right: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a href="index.html">单元首页</a>
+          <a class="active" href="#">知识点</a>
+          <a href="#experiment">实验关联</a>
+          <a href="#questions">题型</a>
+          <a href="#mistakes">易错点</a>
+          <a href="#parents">家长陪学</a>
+        </nav>
+        <div class="mode-toggle" aria-label="模式切换">
+          <button class="active" type="button" data-mode="student">学生</button>
+          <button type="button" data-mode="parent">家长</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell page">
+      <div class="main">
+        <div class="crumbs">压强单元 / 知识点 02 / 压强到底表示什么</div>
+
+        <section class="hero" id="top">
+          <div>
+            <span class="eyebrow">从图钉开始理解压强</span>
+            <h1>压强不是“力大”，而是“力有多集中”</h1>
+            <p class="lead">同样大小的力，如果集中在很小的面积上，作用效果会明显得多。图钉尖、刀刃、高跟鞋都在讲这个道理。</p>
+            <div class="actions">
+              <a class="btn primary" href="#human">先听人话解释</a>
+              <a class="btn" href="#questions">直接看题型</a>
+            </div>
+          </div>
+          <div class="pin-demo" aria-label="图钉压强示意">
+            <span class="callout c1">同样用力按</span>
+            <span class="callout c2">尖端面积很小</span>
+            <div class="finger"></div>
+            <div class="pin-head"></div>
+            <div class="pin-point"></div>
+            <div class="surface"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="human">
+          <h2>一句人话解释</h2>
+          <div class="big-line">压强表示压力作用得有多集中。</div>
+          <p>同样 100 牛的压力，如果摊在很大的面积上，每一小块地方分到的压力就少；如果挤在很小的面积上，每一小块地方分到的压力就多，作用效果就更明显。</p>
+        </section>
+
+        <section class="panel" id="model">
+          <h2>最通俗的理解</h2>
+          <div class="two-col">
+            <article class="card">
+              <div class="mini-title">它像什么</div>
+              <h3>像“压力分摊”</h3>
+              <p>压强不是看总共用了多大力，而是看这些力分到每一小块面积上有多少。</p>
+            </article>
+            <article class="card">
+              <div class="mini-title">它不是什么</div>
+              <h3>不是单纯比谁更重</h3>
+              <p>人更重，压强不一定更大。如果鞋底面积也大很多，单位面积分到的压力可能反而更小。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="concept">
+          <h2>回到课本概念</h2>
+          <div class="two-col">
+            <div class="formula">p = F / S</div>
+            <div class="card">
+              <h3>单位面积上受到的压力叫压强</h3>
+              <p><strong>p</strong> 是压强，<strong>F</strong> 是压力，<strong>S</strong> 是受力面积。单位是帕斯卡，写作 Pa。</p>
+              <p>这页先记住一个核心：压强比较的是“集中程度”，公式只是把这个想法写成数学。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="steps">
+          <h2>这类题先想什么</h2>
+          <div class="steps">
+            <div class="step"><h3>先判断是不是在说“作用效果”</h3><p>题目出现“更容易陷进去、扎进去、更疼、更压坏”，通常在考压强。</p></div>
+            <div class="step"><h3>再看压力有没有变</h3><p>同一个人、同一个物体，很多时候压力近似不变；但题目给了质量变化，就要重新判断。</p></div>
+            <div class="step"><h3>最后看受力面积有没有变</h3><p>面积越小，压力越集中；面积越大，压力越分散。</p></div>
+          </div>
+        </section>
+
+        <section class="panel" id="questions">
+          <h2>题型拆解</h2>
+          <div class="tabs" role="tablist">
+            <button class="tab active" type="button" data-tab="simple">简单题型</button>
+            <button class="tab" type="button" data-tab="hard">复杂题型</button>
+          </div>
+          <div class="tab-panel active" id="simple">
+            <div class="example">
+              <h3>例题：为什么图钉尖做得很尖？</h3>
+              <p>第一眼先看：题目在说“扎进去更容易”，这是压力作用效果明显。</p>
+              <button class="btn" type="button" data-answer="a1">展开解题思路</button>
+              <div class="answer" id="a1">用力按图钉时，图钉尖端的受力面积很小，压力集中在很小的面积上，所以压强大，更容易扎入物体。</div>
+            </div>
+          </div>
+          <div class="tab-panel" id="hard">
+            <div class="example">
+              <h3>例题：人变重了，但鞋底也变宽了，压强一定变大吗？</h3>
+              <p>第一眼先看：压力和受力面积都变了，不能只凭感觉判断。</p>
+              <button class="btn" type="button" data-answer="a2">展开解题思路</button>
+              <div class="answer" id="a2">不一定。压强由压力和受力面积共同决定。人变重会让压力变大，鞋底变宽会让受力面积变大，两者同时变化时，要比较 F/S 的结果。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="experiment">
+          <h2>实验关联</h2>
+          <div class="two-col">
+            <article class="card">
+              <div class="mini-title">对应实验</div>
+              <h3>探究压力作用效果与什么因素有关</h3>
+              <p>海绵凹陷越明显，说明压力作用效果越明显。这个实验就是在分别改变压力和受力面积。</p>
+            </article>
+            <article class="card">
+              <div class="mini-title">这一页对应实验里的哪句话</div>
+              <h3>压力相同时，受力面积越小，作用效果越明显</h3>
+              <p>这句话就是“压强表示力有多集中”的实验版表达。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="mistakes">
+          <h2>最容易错的 3 件事</h2>
+          <div class="three-col">
+            <article class="card mistake">
+              <h3>压强大就是压力大</h3>
+              <p>错。压强还要看受力面积。面积小，压力不大也可能压强大。</p>
+            </article>
+            <article class="card mistake">
+              <h3>面积小就一定压强大</h3>
+              <p>不严谨。还要看压力是否相同。比较时条件必须说清。</p>
+            </article>
+            <article class="card mistake">
+              <h3>更疼就是力更大</h3>
+              <p>不一定。更疼可能是力更集中，也就是压强更大。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel parent-card" id="parents">
+          <h2>家长提问卡</h2>
+          <div class="steps">
+            <div class="step"><h3>同样用力按，一个手指按和整个手掌按，哪个更疼？为什么？</h3><p>看孩子能不能说出“面积小，力更集中”。</p></div>
+            <div class="step"><h3>高跟鞋更伤地板，是因为人更重吗？</h3><p>如果孩子只说“更重”，说明还没分清压力和压强。</p></div>
+            <div class="step"><h3>“更容易压进去”通常在说明什么？</h3><p>理想回答是：说明压力作用效果更明显，往往对应压强更大。</p></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>中考真题挑战</h2>
+          <p>这页对应的高频题型是“压力与受力面积共同决定压强”。做题时重点看清题目是在比较压力、面积，还是两者都在变。</p>
+          <div class="actions">
+            <a class="btn primary" href="advanced-practice.html">去做关联真题</a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>本页小结</h2>
+          <div class="big-line">压强 = 压力作用的集中程度。</div>
+          <p>做题时不要只看“谁更重”，要同时看压力和受力面积。解释生活现象时，优先说清“力是否变了、面积是否变了”。</p>
+          <div class="actions">
+            <a class="btn" href="index.html">回到首页</a>
+            <a class="btn primary" href="pressure-formula.html">下一页：公式怎么用</a>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side">
+        <article class="card">
+          <h3>本页目录</h3>
+          <a href="#human">一句人话解释</a>
+          <a href="#model">通俗理解</a>
+          <a href="#concept">课本概念</a>
+          <a href="#steps">做题第一步</a>
+          <a href="#questions">题型拆解</a>
+          <a href="#mistakes">易错点</a>
+        </article>
+        <article class="card">
+          <h3>学习状态</h3>
+          <ul>
+            <li>所属单元：压强</li>
+            <li>建议时长：12 分钟</li>
+            <li>难度：基础核心</li>
+          </ul>
+        </article>
+        <article class="card parent-card">
+          <h3>家长看这里</h3>
+          <p>如果孩子只能背“单位面积上受到的压力”，但不能解释图钉和高跟鞋，说明还没有真正懂。</p>
+          <button class="btn" type="button" data-parent-switch>切换家长模式</button>
+        </article>
+      </aside>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.querySelector("#toast");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modeButtons.forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          document.body.classList.toggle("parent-mode", button.dataset.mode === "parent");
+          showToast(button.dataset.mode === "parent" ? "已切换到家长模式。" : "已切换到学生模式。");
+        });
+      });
+
+      document.querySelectorAll("[data-parent-switch]").forEach((button) => {
+        button.addEventListener("click", () => document.querySelector('[data-mode="parent"]').click());
+      });
+
+      document.querySelectorAll("[data-toast]").forEach((button) => {
+        button.addEventListener("click", () => showToast(button.dataset.toast));
+      });
+
+      document.querySelectorAll("[data-answer]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const answer = document.querySelector(`#${button.dataset.answer}`);
+          answer.classList.toggle("open");
+          button.textContent = answer.classList.contains("open") ? "收起解题思路" : "展开解题思路";
+        });
+      });
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-tab]").forEach((item) => item.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+          button.classList.add("active");
+          document.querySelector(`#${button.dataset.tab}`).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
