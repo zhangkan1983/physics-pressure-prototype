@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>压强 72 分拔高卷</title>
+    <style>
+      :root {
+        --ink: #17211b;
+        --muted: #667267;
+        --line: #d9ded4;
+        --paper: #fbfbf5;
+        --panel: #ffffff;
+        --field: #f1f4ec;
+        --green: #2f6f4e;
+        --green-2: #dfeee4;
+        --blue: #315f83;
+        --blue-2: #e2edf4;
+        --red: #b64c35;
+        --red-2: #f5e4df;
+        --yellow: #f1c75b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(23, 33, 27, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 28px 28px;
+        color: var(--ink);
+        font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(23, 33, 27, 0.12);
+        background: rgba(251, 251, 245, 0.94);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 158px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .navlinks a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a.active,
+      .navlinks a:hover {
+        color: var(--ink);
+        background: var(--field);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 370px;
+        gap: 28px;
+        align-items: center;
+        margin-top: 34px;
+        padding: 38px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #fbfbf5 0%, #f7ead4 52%, #e5edf4 100%);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--red);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(36px, 4.7vw, 66px);
+        line-height: 1.03;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3vw, 38px);
+        line-height: 1.18;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0;
+        color: #4d5a50;
+        line-height: 1.75;
+      }
+
+      .lead {
+        font-size: 20px;
+        line-height: 1.75;
+      }
+
+      .score-card {
+        display: grid;
+        gap: 12px;
+      }
+
+      .score-card div {
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.82);
+        padding: 16px;
+      }
+
+      .score-card strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--red);
+        font-size: 24px;
+      }
+
+      section {
+        padding: 42px 0;
+      }
+
+      .toolbar {
+        position: sticky;
+        top: 72px;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(251, 251, 245, 0.96);
+        backdrop-filter: blur(10px);
+      }
+
+      select {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 0 12px;
+        color: var(--ink);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .btn.danger {
+        background: var(--red);
+        color: white;
+      }
+
+      .paper {
+        display: grid;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .problem {
+        display: grid;
+        gap: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        padding: 24px;
+      }
+
+      .problem-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .chips,
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: var(--field);
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .chip.hot {
+        background: var(--red-2);
+        color: var(--red);
+      }
+
+      .chip.knowledge {
+        background: var(--green-2);
+        color: var(--green);
+      }
+
+      .stem {
+        border-left: 6px solid var(--red);
+        border-radius: 8px;
+        background: var(--red-2);
+        padding: 16px 18px;
+        color: #4b312b;
+        line-height: 1.9;
+      }
+
+      .gate {
+        border: 1px dashed rgba(182, 76, 53, 0.55);
+        border-radius: 8px;
+        background: #fff8f2;
+        padding: 14px;
+        color: #674236;
+        line-height: 1.75;
+      }
+
+      .solution {
+        display: none;
+        gap: 14px;
+        border-radius: 8px;
+        background: var(--blue-2);
+        padding: 18px;
+      }
+
+      .solution.open {
+        display: grid;
+      }
+
+      .solution-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .solution-card {
+        border: 1px solid rgba(49, 95, 131, 0.24);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.66);
+        padding: 14px;
+      }
+
+      .solution-card strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--blue);
+      }
+
+      .solution ol {
+        margin: 0;
+        padding-left: 22px;
+        color: #31485a;
+        line-height: 1.8;
+      }
+
+      .notice {
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--yellow);
+        padding: 20px;
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      @media (max-width: 980px) {
+        .navlinks {
+          display: none;
+        }
+
+        .hero,
+        .toolbar,
+        .solution-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          position: static;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          padding: 0 16px;
+        }
+
+        .nav {
+          padding: 12px 0;
+          flex-wrap: wrap;
+        }
+
+        .brand {
+          flex: 1;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .problem-head {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell nav">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">压</span>
+          <span>初二物理</span>
+        </a>
+        <nav class="navlinks" aria-label="主导航">
+          <a href="index.html">单元首页</a>
+          <a href="challenge-practice.html">压轴训练</a>
+          <a href="#paper" class="active">72 分拔高</a>
+          <a href="#method">硬题方法</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="shell">
+        <section class="hero">
+          <div>
+            <span class="eyebrow">72 分学生专用 · 不刷低阶熟练题</span>
+            <h1>难题不是更大数字，是条件会互相打架</h1>
+            <p class="lead">这套题默认学生已经会 `p=F/S` 和 `p=ρgh`。真正训练的是：先分对象，再分阶段，再判断哪个量能不能相等。</p>
+          </div>
+          <div class="score-card">
+            <div><strong>Level 5</strong><p>多对象、多阶段、变量同时变化。</p></div>
+            <div><strong>Level 6</strong><p>图像、临界、反例、实验漏洞。</p></div>
+            <div><strong>目标</strong><p>不是做对一道题，是能解释为什么别的路错。</p></div>
+          </div>
+        </section>
+
+        <section id="paper">
+          <div class="toolbar" aria-label="题目筛选">
+            <select id="levelFilter">
+              <option value="all">全部等级</option>
+              <option value="l5">Level 5</option>
+              <option value="l6">Level 6</option>
+            </select>
+            <select id="topicFilter">
+              <option value="all">全部专题</option>
+              <option value="solid">固体压强</option>
+              <option value="liquid">液体压强</option>
+              <option value="graph">图像</option>
+              <option value="experiment">实验</option>
+              <option value="counter">反例</option>
+            </select>
+            <button class="btn" id="reset" type="button">重置</button>
+          </div>
+
+          <div class="paper">
+            <article class="problem" data-level="l5" data-topic="solid">
+              <div class="problem-head">
+                <div>
+                  <h3>01 切割、叠放、翻面后的最大压强</h3>
+                  <div class="chips"><span class="chip hot">Level 5</span><span class="chip">极值判断</span><span class="chip">固体压强</span></div>
+                </div>
+                <button class="btn danger" data-solution="s1" type="button">看硬解</button>
+              </div>
+              <div class="stem">一个均匀长方体重 48 N，三条棱长分别为 10 cm、20 cm、40 cm。先沿 40 cm 长边的中点切成两个完全相同的小长方体，再任选一个或两个小长方体放在水平桌面上，可以单放、叠放、翻面。求所有方案中桌面受到的最大压强和最小压强，并说明“叠得越高压强越大”这句话为什么不总可靠。</div>
+              <div class="gate">门槛：不能只看“总重变大”。每个方案都要同时看桌面承受的总压力和真正接触桌面的面积。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-change.html">改变压强</a></div>
+              <div class="solution" id="s1">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>先列小长方体三种可能接触面积，再决定用一个还是两个。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>叠放后压力加倍，但接触桌面的面积由最下面那个面的朝向决定。</p></div>
+                </div>
+                <ol><li>每个小块尺寸为 10 cm、20 cm、20 cm，重 24 N。</li><li>小块三种接触面积：0.1×0.2=0.02 m²，0.1×0.2=0.02 m²，0.2×0.2=0.04 m²。</li><li>单放最大压强：24/0.02=1200 Pa；单放最小压强：24/0.04=600 Pa。</li><li>两个叠放时桌面受压力 48 N。若底面积 0.02 m²，p=2400 Pa；若底面积 0.04 m²，p=1200 Pa。</li><li>所以最大压强 2400 Pa，最小压强 600 Pa。</li><li>“叠得越高压强越大”不总可靠，因为如果叠放同时把底面积换大，压强可能不增反降。硬题必须同时比较 F 和 S。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l6" data-topic="liquid graph">
+              <div class="problem-head">
+                <div>
+                  <h3>02 连通器打开阀门后的终态压强</h3>
+                  <div class="chips"><span class="chip hot">Level 6</span><span class="chip">体积守恒</span><span class="chip">液体压强</span></div>
+                </div>
+                <button class="btn danger" data-solution="s2" type="button">看硬解</button>
+              </div>
+              <div class="stem">两个底面积分别为 20 cm² 和 60 cm² 的竖直圆柱形容器，底部用细管和阀门连接，细管体积忽略。左容器水深 30 cm，右容器水深 10 cm。打开阀门后静止，求两容器最终水深；比较打开前后左、右容器底部液体压强的变化。</div>
+              <div class="gate">门槛：不能说“两个容器底面积不同，所以压强不同”。连通后同种液体静止，液面高度相同。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="solution" id="s2">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>先用体积守恒求共同水深，再用 p=ρgh 比较。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>底面积影响水量分配，不直接决定同深度处压强。</p></div>
+                </div>
+                <ol><li>总水体积：20×30+60×10=1200 cm³。</li><li>连通后两容器液面等高，总底面积 20+60=80 cm²，所以最终水深 h=1200/80=15 cm。</li><li>左容器：水深从 30 cm 变 15 cm，底部液体压强变为原来的 1/2。</li><li>右容器：水深从 10 cm 变 15 cm，底部液体压强变为原来的 3/2。</li><li>本题没有要求水对底部压力。若问压力，还要分别乘各自底面积。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l6" data-topic="liquid counter">
+              <div class="problem-head">
+                <div>
+                  <h3>03 不规则底部能不能说“底部压强相等”</h3>
+                  <div class="chips"><span class="chip hot">Level 6</span><span class="chip">反例构造</span><span class="chip">条件完整性</span></div>
+                </div>
+                <button class="btn danger" data-solution="s3" type="button">看硬解</button>
+              </div>
+              <div class="stem">甲、乙两个容器装同种液体，液面一样高。甲的底面是水平平面；乙的底部是台阶形，一部分底面比另一部分低 5 cm。有人说：“同种液体、液面高度相同，所以两个容器底部压强都相等。”判断这句话是否正确，并给出最小反例。</div>
+              <div class="gate">门槛：这题考的不是公式，而是“底部”是不是一个同深度平面。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="solution" id="s3">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>把“底部”拆成不同点，分别看每个点到液面的竖直深度。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>同一容器的底部也可能不是同一深度。</p></div>
+                </div>
+                <ol><li>这句话不严谨。液体压强由 p=ρgh 决定，h 是该点到液面的竖直深度。</li><li>甲若底面水平，甲底面各点深度相同，甲底面各点压强相同。</li><li>乙是台阶底，较低那部分比另一部分深 5 cm，所以较低处压强更大。</li><li>最小反例：同一乙容器内，台阶上表面一点 A 和更低底面一点 B，B 的 h 比 A 大 5 cm，所以 pB-pA=ρg×0.05。</li><li>正确表述：同种液体中，同一竖直深度处压强相等；不能把不规则底部粗暴当成一个点。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l5" data-topic="liquid">
+              <div class="problem-head">
+                <div>
+                  <h3>04 水对底压强变大，桌面压强反而变小</h3>
+                  <div class="chips"><span class="chip hot">Level 5</span><span class="chip">对象分离</span><span class="chip">双压强</span></div>
+                </div>
+                <button class="btn danger" data-solution="s4" type="button">看硬解</button>
+              </div>
+              <div class="stem">薄壁圆柱容器放在水平桌面上，容器底面积为 0.01 m²，初始水深 0.10 m，容器和水总重 10 N。后来继续加水至水深 0.20 m，容器和水总重变为 16 N；同时把容器放到一块轻质硬板上，硬板与桌面的接触面积为 0.04 m²。比较前后：水对容器底的压强如何变化？桌面受到的压强如何变化？g 取 10 N/kg。</div>
+              <div class="gate">门槛：水对底看液体深度 h；桌面压强看桌面承受的总压力和接触面积。两个“压强”的对象不同。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="solution" id="s4">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>先算水对底，再算容器系统对桌面，不能混公式。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>总重变大不代表桌面压强一定变大，因为接触面积也变了。</p></div>
+                </div>
+                <ol><li>水对容器底的压强：p=ρgh。水深从 0.10 m 变为 0.20 m，所以水对底压强变为原来的 2 倍。</li><li>初始桌面压强：p桌1=10/0.01=1000 Pa。</li><li>后来桌面承受的总压力为 16 N，但接触面积变为 0.04 m²，所以 p桌2=16/0.04=400 Pa。</li><li>水对底压强变大，桌面压强反而变小。</li><li>这题的价值在于：同一个场景里有两个对象，水对容器底用 ρgh，容器对桌面用 F/S。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l6" data-topic="graph liquid">
+              <div class="problem-head">
+                <div>
+                  <h3>05 p-h 图像反推出液体和仪器错误</h3>
+                  <div class="chips"><span class="chip hot">Level 6</span><span class="chip">图像斜率</span><span class="chip">实验误差</span></div>
+                </div>
+                <button class="btn danger" data-solution="s5" type="button">看硬解</button>
+              </div>
+              <div class="stem">甲、乙两种液体的 p-h 图像都是直线。甲线过原点，h=0.20 m 时 p=2400 Pa；乙线不过原点，h=0 时 p=300 Pa，h=0.20 m 时 p=2300 Pa。g 取 10 N/kg。判断哪种液体密度大；乙线为什么不过原点；如果只比较 h=0.20 m 处的压强，能不能直接说乙液体密度更小？</div>
+              <div class="gate">门槛：斜率才对应 ρg，截距可能是仪器零点误差或额外初始压强。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="solution" id="s5">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>密度看 p-h 图像斜率，不只看某一个点的 p。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>乙在 h=0 时已有 300 Pa，说明有零点偏差或背景压强未扣除。</p></div>
+                </div>
+                <ol><li>甲斜率：2400/0.20=12000 Pa/m，所以 ρ甲=12000/10=1200 kg/m³。</li><li>乙斜率：(2300-300)/0.20=10000 Pa/m，所以 ρ乙=10000/10=1000 kg/m³。</li><li>甲液体密度更大。</li><li>乙线不过原点，说明测量值中含有固定偏差，比如压强计未调零，或读数包含了不该计入的初始压强。</li><li>只比较 h=0.20 m 处，甲 2400 Pa、乙 2300 Pa，虽然也能判断甲更大，但理由不能写成“乙密度一定小所以乙压强小”。严谨依据是扣除截距后比较斜率。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l5" data-topic="experiment">
+              <div class="problem-head">
+                <div>
+                  <h3>06 海绵实验的“伪结论”反杀题</h3>
+                  <div class="chips"><span class="chip hot">Level 5</span><span class="chip">实验漏洞</span><span class="chip">控制变量</span></div>
+                </div>
+                <button class="btn danger" data-solution="s6" type="button">看硬解</button>
+              </div>
+              <div class="stem">某同学用两个不同材料的物块探究压力作用效果。甲：铁块平放在海绵上；乙：木块竖放在同一海绵上。观察到乙使海绵凹陷更深，于是得出“压力越小，作用效果也可能越明显，所以压强和压力无关”。指出这个结论的问题，并设计一组实验反驳它。</div>
+              <div class="gate">门槛：不是回答“错了”就完，要指出至少两个没控制的变量。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-change.html">改变压强</a></div>
+              <div class="solution" id="s6">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>先抓变量：压力、受力面积、材料、放置方式。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>实验现象可能对，但推出的因果关系错。</p></div>
+                </div>
+                <ol><li>结论错误。压强与压力有关，也与受力面积有关，公式是 p=F/S。</li><li>甲乙同时改变了物块材料、压力大小、接触面积和放置方式，不能只把结果归因于压力。</li><li>反驳实验一：用同一个物块，保持受力面积相同，在上面加砝码，观察压力变大时凹陷是否加深。</li><li>反驳实验二：用同一个物块，保持总压力相同，分别平放和竖放，观察面积变小时凹陷是否加深。</li><li>完整结论：受力面积相同时，压力越大，压力作用效果越明显；压力相同时，受力面积越小，压力作用效果越明显。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l6" data-topic="solid counter">
+              <div class="problem-head">
+                <div>
+                  <h3>07 “压力等于重力”的边界反例</h3>
+                  <div class="chips"><span class="chip hot">Level 6</span><span class="chip">受力对象</span><span class="chip">反例</span></div>
+                </div>
+                <button class="btn danger" data-solution="s7" type="button">看硬解</button>
+              </div>
+              <div class="stem">一个重 20 N 的物块放在水平桌面上，桌面对物块的支持力为 20 N。现在用手向下压物块，手对物块的压力为 5 N；再改成用手竖直向上提物块但未提离桌面，手对物块的拉力为 5 N。分别求物块对桌面的压力，并说明为什么不能直接写“压力等于重力”。</div>
+              <div class="gate">门槛：先画物块受力，再用平衡条件求桌面对物块的支持力，最后用相互作用力转为物块对桌面的压力。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-meaning.html">压强意义</a><a class="chip knowledge" href="pressure-formula.html">公式使用</a></div>
+              <div class="solution" id="s7">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>物块静止：向上力等于向下力。桌面压力等于桌面对物块支持力大小。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>压力不是重力本身，压力来自接触挤压。</p></div>
+                </div>
+                <ol><li>不额外施力时，支持力 N=20 N，所以物块对桌面压力为 20 N。</li><li>手向下压 5 N 时，向下总力为 20+5=25 N，桌面对物块支持力 N=25 N，所以物块对桌面压力为 25 N。</li><li>手向上拉 5 N 且未离开桌面时，向上有拉力 5 N 和支持力 N，向下重力 20 N，所以 N+5=20，N=15 N，物块对桌面压力为 15 N。</li><li>“压力等于重力”只在特定条件下近似成立：物体静止在水平面上，且没有其他竖直外力。</li></ol>
+              </div>
+            </article>
+
+            <article class="problem" data-level="l6" data-topic="counter liquid solid">
+              <div class="problem-head">
+                <div>
+                  <h3>08 四句“一定”综合反例题</h3>
+                  <div class="chips"><span class="chip hot">Level 6</span><span class="chip">综合辨析</span><span class="chip">反例能力</span></div>
+                </div>
+                <button class="btn danger" data-solution="s8" type="button">看硬解</button>
+              </div>
+              <div class="stem">判断并给出理由或反例：A. 压力越大，压强一定越大。B. 容器底面积越大，液体对底的压强一定越小。C. 同种液体中，越靠近容器底部压强一定越大。D. 两个容器对桌面的压力相等，则它们对桌面的压强一定相等。</div>
+              <div class="gate">门槛：看到“一定”，优先找缺失条件。不是背结论，是构造反例。</div>
+              <div class="links"><a class="chip knowledge" href="pressure-formula.html">公式使用</a><a class="chip knowledge" href="pressure-liquid-law.html">液体压强规律</a></div>
+              <div class="solution" id="s8">
+                <div class="solution-grid">
+                  <div class="solution-card"><strong>路线图</strong><p>固体压强查 F 和 S；液体压强查 ρ 和 h。</p></div>
+                  <div class="solution-card"><strong>陷阱</strong><p>“底面积”“液体多少”“靠近底部”都可能不是直接变量。</p></div>
+                </div>
+                <ol><li>A 错。压力变大但受力面积也变大更多时，压强可能变小。</li><li>B 错。液体对底压强 p=ρgh，与底面积不直接相关。两个容器装同种液体且水深相同，底面积不同，底部压强仍相等。</li><li>C 不严谨。如果容器底部不水平，“靠近底部”不是压强变量；真正变量是从液面向下的竖直深度 h。同种液体中，同一竖直深度处压强相等，h 越大压强越大。</li><li>D 错。桌面压强 p=F/S，压力相等但接触面积不同，压强不同。</li><li>本题答案的核心不是“全错”，而是每句都缺了条件。</li></ol>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="method">
+          <div class="notice">
+            <h2>72 分以后怎么提分</h2>
+            <p>少刷“直接代公式”的题。每道难题先写三行：对象是谁；状态怎么变；该用的变量是 F、S、h、ρ 中哪几个。写不出这三行，说明不是算力问题，是建模问题。</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const levelFilter = document.querySelector("#levelFilter");
+      const topicFilter = document.querySelector("#topicFilter");
+      const problems = document.querySelectorAll(".problem");
+
+      function applyFilters() {
+        const level = levelFilter.value;
+        const topic = topicFilter.value;
+        problems.forEach((item) => {
+          const levelMatch = level === "all" || item.dataset.level === level;
+          const topicMatch = topic === "all" || item.dataset.topic.split(" ").includes(topic);
+          item.style.display = levelMatch && topicMatch ? "grid" : "none";
+        });
+      }
+
+      document.querySelector("#reset").addEventListener("click", () => {
+        levelFilter.value = "all";
+        topicFilter.value = "all";
+        applyFilters();
+      });
+      levelFilter.addEventListener("change", applyFilters);
+      topicFilter.addEventListener("change", applyFilters);
+
+      document.querySelectorAll("[data-solution]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = document.querySelector(`#${button.dataset.solution}`);
+          target.classList.toggle("open");
+          button.textContent = target.classList.contains("open") ? "收起硬解" : "看硬解";
+        });
+      });
+    </script>
+  </body>
+</html>
